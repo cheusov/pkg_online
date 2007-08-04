@@ -1,0 +1,31 @@
+#!/bin/sh
+
+if test "$#" = 0; then
+    echo 'usage: info2dict-index <comment|maintainer|...> [files...]'
+fi
+
+field=$1
+shift
+
+awk -v field="$field" '
+/^[^ ]/ && $1 ~ /^[Pp][Kk][Gg][Dd][Ii][Rr]:$/ {
+#    print "field=" field
+    pkgdir = $2
+    next
+}
+{
+#    print tolower($1), field
+}
+
+tolower($1) == (field ":") { #&& NF > 1 {
+#    print $1
+    $1 = ""
+    printf "_____\n\n%s\n", substr($0, 2) "|%%|" pkgdir
+    next
+}
+
+' "$@" |
+dictfmt -c5 -s "pkgsrc packages: $field index" \
+   --allchars --index-data-separator '|%%|' \
+   --without-header --without-headword -u 'http://www.pkgsrc.org' \
+   pkgsrc-"$field"

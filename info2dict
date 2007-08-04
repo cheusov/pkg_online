@@ -1,0 +1,18 @@
+#!/bin/sh
+
+awk '
+/^---/ {
+    next
+}
+
+/^[^ ]/ && $1 ~ /^[Pp][Kk][Gg][Dd][Ii][Rr]:$/ {
+    printf "_____\n\n%s\n", $2
+    next
+}
+
+{
+    print
+}' "$@" |
+dictfmt -c5 -s 'pkgsrc packages' --allchars \
+   --without-headword --without-header -u 'http://www.pkgsrc.org' \
+   --columns 0 pkgsrc
