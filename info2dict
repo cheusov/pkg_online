@@ -5,7 +5,7 @@ awk '
     next
 }
 
-/^[^ ]/ && $1 ~ /^[Pp][Kk][Gg][Dd][Ii][Rr]:$/ {
+/^[^ ]/ && $1 ~ /^[Pp][Kk][Gg][Nn][Aa][Mm][Ee]:$/ {
     printf "_____\n\n%s\n", $2
     next
 }
@@ -13,6 +13,6 @@ awk '
 {
     print
 }' "$@" |
-dictfmt -c5 -s 'pkgsrc packages' --allchars \
+dictfmt -c5 -q -s 'pkgsrc packages' --allchars \
    --without-headword --without-header -u 'http://www.pkgsrc.org' \
    --columns 0 pkgsrc
