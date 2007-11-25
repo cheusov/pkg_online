@@ -13,6 +13,7 @@ awk -v field="$field" '
     pkgdir = $2
     next
 }
+
 {
 #    print tolower($1), field
 }
@@ -39,8 +40,6 @@ field == "plist" && tolower($1) == (field ":"), NF == 0 {
 }
 
 field == "descr" && tolower($1) == (field ":"), NF == 0 {
-    $1 = $1
-
     if ($0 ~ /^  /){
 	descr = descr " " $0
     }
