@@ -8,7 +8,7 @@ field=$1
 shift
 
 awk -v field="$field" '
-/^[^ ]/ && $1 ~ /^[Pp][Kk][Gg][Dd][Ii][Rr]:$/ {
+/^[^ ]/ && $1 ~ /^[Pp][Kk][Gg][Nn][Aa][Mm][Ee]:$/ {
 #    print "field=" field
     pkgdir = $2
     next
@@ -17,15 +17,42 @@ awk -v field="$field" '
 #    print tolower($1), field
 }
 
-tolower($1) == (field ":") { #&& NF > 1 {
-#    print $1
+field ~ /^(only|not)for$/ && tolower($1) == (field ":") && NF > 1 {
+    if ($2 == "any"){
+	next
+    }
+
     $1 = ""
     printf "_____\n\n%s\n", substr($0, 2) "|%%|" pkgdir
     next
 }
 
+tolower($1) == (field ":") && NF > 1 {
+    $1 = ""
+    printf "_____\n\n%s\n", substr($0, 2) "|%%|" pkgdir
+    next
+}
+
+field == "plist" && tolower($1) == (field ":"), NF == 0 {
+    printf "_____\n\n%s\n", substr($1, 3) "|%%|" pkgdir
+    next
+}
+
+field == "descr" && tolower($1) == (field ":"), NF == 0 {
+    $1 = $1
+
+    if ($0 ~ /^  /){
+	descr = descr " " $0
+    }
+
+    if (NF == 0){
+	printf "_____\n\n%s\n", substr(descr, 2) "|%%|" pkgdir
+	descr = ""
+    }
+    next
+}
 ' "$@" |
-dictfmt -c5 -s "pkgsrc packages: $field index" \
+dictfmt -c5 -q -s "pkgsrc packages: $field index" \
    --allchars --index-data-separator '|%%|' \
    --without-header --without-headword -u 'http://www.pkgsrc.org' \
    pkgsrc-"$field"
