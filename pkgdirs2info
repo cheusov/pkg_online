@@ -12,6 +12,9 @@ fi
 ############################################################
 cd $PKGSRC
 
+tmpfn=/tmp/pkgdirs2info.$$
+trap 'rm -f $tmpfn' 0 1 2 15
+
 ############################################################
 capitalize (){
     echo $1 | awk '{print toupper(substr($0, 1, 1)) substr($0, 2)}'
@@ -57,14 +60,23 @@ summary_data2info (){
 
 generate_info (){
     echo '------------------------------'
-    echo "PKGDIR:          $1"
 
     # general information
-    ( cd $1; ${BMAKE} print-summary-data; ) | summary_data2info
+    ( cd $1; ${BMAKE} print-summary-data; ) > "$tmpfn";
+    pkgname=`awk '$1 == "index" {sub(/-[^-]*$/, "", $3); print $3}' "$tmpfn"`
+    pkgdir=`awk '$1 == "index" {print $2}' "$tmpfn"`
+    echo "PKGNAME:         $pkgname"
+    echo "PKGDIR:          $pkgdir"
+    cat "$tmpfn" | summary_data2info
 
     # plist
     capitalize "PLIST:"
-    awk '/^[^@]/ {print "  " $0}' $1/PLIST
+    plist_fn=$1/PLIST
+    if test -f $plist_fn; then
+	awk '/^[^@]/ {print "  " $0}' $plist_fn
+    else
+	echo ''
+    fi
 }
 
 ############################################################
