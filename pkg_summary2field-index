@@ -1,62 +1,68 @@
 #!/bin/sh
 
+set -e
+. pipestatus
+
 if test -n "$PKG_SUMMARY_TYPE"; then
     suff="-$PKG_SUMMARY_TYPE"
      msg=" $PKG_SUMMARY_TYPE"
 fi
 
 if test "$#" = 0; then
-    echo 'usage: info2dict-index <comment|maintainer|...> [files...]'
+    echo 'usage: pkg_summary2field-index <comment|maintainer|...> [files...]'
 fi
 
 field=$1
 shift
 
+summary2dict (){
 awk -v field="$field" '
-/^[^ ]/ && $1 ~ /^[Pp][Kk][Gg][Nn][Aa][Mm][Ee]:$/ {
-#    print "field=" field
-    pkgdir = $2
+/^[^ ]/ && $1 ~ /^PKGNAME:$/ {
+    pkgname = $2
+    sub(/-[^-]*$/, "", pkgname)
+
     next
 }
 
-{
-#    print tolower($1), field
-}
-
-field ~ /^(only|not)for$/ && tolower($1) == (field ":") && NF > 1 {
+field ~ /^(ONLY|NOT)FOR$/ && $1 == (field ":") && NF > 1 {
     if ($2 == "any"){
 	next
     }
 
     $1 = ""
-    printf "_____\n\n%s\n", substr($0, 2) "|%%|" pkgdir
+    printf "_____\n\n%s\n", substr($0, 2) "|%%|" pkgname
     next
 }
 
-tolower($1) == (field ":") && NF > 1 {
+$1 == (field ":") && NF > 1 {
     $1 = ""
-    printf "_____\n\n%s\n", substr($0, 2) "|%%|" pkgdir
+    printf "_____\n\n%s\n", substr($0, 2) "|%%|" pkgname
     next
 }
 
-field == "plist" && tolower($1) == (field ":"), NF == 0 {
-    printf "_____\n\n%s\n", substr($1, 3) "|%%|" pkgdir
+field == "plist" && $1 == (field ":"), NF == 0 {
+    printf "_____\n\n%s\n", substr($1, 3) "|%%|" pkgname
     next
 }
 
-field == "descr" && tolower($1) == (field ":"), NF == 0 {
+field == "DESCRIPTION" && $1 == (field ":"), NF == 0 {
     if ($0 ~ /^  /){
 	descr = descr " " $0
     }
 
     if (NF == 0){
-	printf "_____\n\n%s\n", substr(descr, 2) "|%%|" pkgdir
+	printf "_____\n\n%s\n", substr(descr, 2) "|%%|" pkgname
 	descr = ""
     }
     next
 }
-' "$@" |
-dictfmt -c5 -q -s "pkgsrc packages: $field index" \
-   --allchars --index-data-separator '|%%|' \
-   --without-header --without-headword -u 'http://www.pkgsrc.org' \
-   pkgsrc${suff}-"$field"
+' "$@"
+}
+
+runpipe0 \
+    ./pkg_summary4view "$@" '|' \
+    summary2dict '|' \
+    dictfmt -c5 -q -s "pkgsrc packages: $field index" \
+       --allchars --index-data-separator '|%%|' \
+       --without-header --without-headword -u 'http://www.pkgsrc.org' \
+       pkgsrc${suff}-"$field"
