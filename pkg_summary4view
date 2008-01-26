@@ -33,7 +33,7 @@ NF == 0 {
 			print field ":"
 		}
 
-		printf "   "
+		printf "        "
 	}else{
 		printf "%s:", field
 		spaces(20-length(field))
