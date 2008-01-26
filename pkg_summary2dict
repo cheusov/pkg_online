@@ -15,7 +15,9 @@ awk '
 }
 
 /^[^ ]/ && $1 ~ /^[Pp][Kk][Gg][Nn][Aa][Mm][Ee]:$/ {
-    printf "_____\n\n%s\n", $2
+    basename = $2
+    sub(/-[^-]*$/, "", basename)
+    printf "_____\n\n%s\n%s\n", basename, $0
     next
 }
 
