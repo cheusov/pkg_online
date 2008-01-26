@@ -24,39 +24,36 @@ capitalize (){
 
 summary_data2info (){
     awk '
-    $1 == "prefix" {
-	next
-    }
-
     function normalize (w){
 	return toupper(w)
 #	return toupper(substr(w, 1, 1)) substr(w, 2)
     }
 
+    BEGIN {
+	descr_msg = normalize("description:")
+    }
+
+    $1 == "prefix" {
+	next
+    }
+
     $1 == "descr" {
-	print "\n" normalize("descr:")
 	fn = $3
 	while (0 < ret = (getline < fn)){
-	    print "  " $0
+	    print descr_msg "=" $0
 	}
 	if (ret < 0){
 	    printf "reading from `" fn "` failed\n" > "/dev/stderr"
 	    exit 1
 	}
-	print ""
 	next
     }
 
-    {
-	$2 = ""
-	$1 = (normalize($1) ":")
-	if ($3 != ""){
-	    while(length($1) < 15){
-		$1 = ($1 " ")
-	    }
-	}
+    NF > 0 {
+	hdr = (normalize($1) "=")
+	$1 = $2 = ""
 
-	print $0
+	print hdr substr($0, 3)
     }'
 }
 
@@ -67,20 +64,15 @@ cd_and_print_summary_data (){
 generate_info (){
     # general information
     if cd_and_print_summary_data $1 > "$tmpfn"; then
-	echo '------------------------------'
 	pkgname=`awk '$1 == "index" {sub(/-[^-]*$/, "", $3); print $3}' "$tmpfn"`
 	pkgpath=`awk '$1 == "index" {print $2}' "$tmpfn"`
-	echo "PKGNAME:         $pkgname"
-	echo "PKGPATH:         $pkgpath"
+	echo "PKGNAME=$pkgname"
+	echo "PKGPATH=$pkgpath"
 	cat "$tmpfn" | summary_data2info
 
-    # plist
-	capitalize "PLIST:"
 	plist_fn=$1/PLIST
 	if test -f $plist_fn; then
-	    awk '/^[^@]/ {print "  " $0}' $plist_fn
-	else
-	    echo ''
+	    awk '/^[^@]/ {print "PLIST=" $0}' $plist_fn
 	fi
     else
 	printf "Bad package $1, skipped\n" 1>&2
@@ -90,5 +82,5 @@ generate_info (){
 ############################################################
 for i; do
     generate_info "$i"
-    echo ''
+    echo '' # empty line - separator 
 done
