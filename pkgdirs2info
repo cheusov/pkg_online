@@ -1,16 +1,18 @@
-#!/bin/sh -e
+#!/bin/sh
+
+set -e
 
 ############################################################
-if test -z "$PKGSRC"; then
-    PKGSRC=/usr/pkgsrc
+if test -z "$PKGSRCDIR"; then
+    PKGSRCDIR=/usr/pkgsrc
 fi
 
-if test -z "$BMAKE"; then
-    BMAKE=make
+if test -z "$MAKE"; then
+    MAKE=make
 fi
 
 ############################################################
-cd $PKGSRC
+cd $PKGSRCDIR
 
 tmpfn=/tmp/pkgdirs2info.$$
 trap 'rm -f $tmpfn' 0 1 2 15
@@ -58,24 +60,30 @@ summary_data2info (){
     }'
 }
 
-generate_info (){
-    echo '------------------------------'
+cd_and_print_summary_data (){
+    ( cd $1 && ${MAKE} print-summary-data; ) > "$tmpfn";
+}
 
+generate_info (){
     # general information
-    ( cd $1; ${BMAKE} print-summary-data; ) > "$tmpfn";
-    pkgname=`awk '$1 == "index" {sub(/-[^-]*$/, "", $3); print $3}' "$tmpfn"`
-    pkgdir=`awk '$1 == "index" {print $2}' "$tmpfn"`
-    echo "PKGNAME:         $pkgname"
-    echo "PKGDIR:          $pkgdir"
-    cat "$tmpfn" | summary_data2info
+    if cd_and_print_summary_data $1 > "$tmpfn"; then
+	echo '------------------------------'
+	pkgname=`awk '$1 == "index" {sub(/-[^-]*$/, "", $3); print $3}' "$tmpfn"`
+	pkgpath=`awk '$1 == "index" {print $2}' "$tmpfn"`
+	echo "PKGNAME:         $pkgname"
+	echo "PKGPATH:         $pkgpath"
+	cat "$tmpfn" | summary_data2info
 
     # plist
-    capitalize "PLIST:"
-    plist_fn=$1/PLIST
-    if test -f $plist_fn; then
-	awk '/^[^@]/ {print "  " $0}' $plist_fn
+	capitalize "PLIST:"
+	plist_fn=$1/PLIST
+	if test -f $plist_fn; then
+	    awk '/^[^@]/ {print "  " $0}' $plist_fn
+	else
+	    echo ''
+	fi
     else
-	echo ''
+	printf "Bad package $1, skipped\n" 1>&2
     fi
 }
 
