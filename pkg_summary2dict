@@ -1,10 +1,14 @@
 #!/bin/sh
 
+set -e
+. pipestatus
+
 if test -n "$PKG_SUMMARY_TYPE"; then
     suff="-$PKG_SUMMARY_TYPE"
      msg=" $PKG_SUMMARY_TYPE"
 fi
 
+summary2dict () {
 awk '
 /^---/ {
     next
@@ -17,7 +21,13 @@ awk '
 
 {
     print
-}' "$@" |
-dictfmt -c5 -q -s "Information about pkgsrc${msg} packages" --allchars \
-   --without-headword --without-header -u 'http://www.pkgsrc.org' \
-   --columns 0 pkgsrc${suff}
+}'
+}
+
+runpipe0 \
+    ./pkg_summary4view "$@" '|' \
+    summary2dict '|' \
+    dictfmt -c5 -q -s "Information about pkgsrc${msg} packages" \
+      --allchars --without-headword --without-header \
+      -u 'http://www.pkgsrc.org' \
+      --columns 0 pkgsrc${suff}
