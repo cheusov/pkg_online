@@ -1,0 +1,48 @@
+#!/usr/bin/awk -f
+
+function spaces (n){
+	while (n-- > 0){
+		printf " "
+	}
+}
+
+BEGIN {
+	special ["DESCRIPTION"] = 0
+	special ["PLIST"]       = 0
+	special ["PROVIDES"]    = 0
+	special ["REQUIRES"]    = 0
+}
+
+NF == 0 {
+	print
+	last_field = ""
+	next
+}
+
+{
+	#
+	field = $0
+	sub(/=.*$/, "", field)
+
+	#
+	sub(/^[^=]*=/, "")
+
+	#
+	if (field in special) {
+		if (field != prev_field) {
+			print field ":"
+		}
+
+		printf "   "
+	}else{
+		printf "%s:", field
+		spaces(20-length(field))
+	}
+
+	#
+	prev_field = field
+}
+
+{
+	print $0
+}
