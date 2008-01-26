@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if test -n "$PKG_SUMMARY_TYPE"; then
+    suff="-$PKG_SUMMARY_TYPE"
+     msg=" $PKG_SUMMARY_TYPE"
+fi
+
 if test "$#" = 0; then
     echo 'usage: info2dict-index <comment|maintainer|...> [files...]'
 fi
@@ -54,4 +59,4 @@ field == "descr" && tolower($1) == (field ":"), NF == 0 {
 dictfmt -c5 -q -s "pkgsrc packages: $field index" \
    --allchars --index-data-separator '|%%|' \
    --without-header --without-headword -u 'http://www.pkgsrc.org' \
-   pkgsrc-"$field"
+   pkgsrc${suff}-"$field"

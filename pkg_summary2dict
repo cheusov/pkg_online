@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if test -n "$PKG_SUMMARY_TYPE"; then
+    suff="-$PKG_SUMMARY_TYPE"
+     msg=" $PKG_SUMMARY_TYPE"
+fi
+
 awk '
 /^---/ {
     next
@@ -13,6 +18,6 @@ awk '
 {
     print
 }' "$@" |
-dictfmt -c5 -q -s 'pkgsrc packages' --allchars \
+dictfmt -c5 -q -s "Information about pkgsrc${msg} packages" --allchars \
    --without-headword --without-header -u 'http://www.pkgsrc.org' \
-   --columns 0 pkgsrc
+   --columns 0 pkgsrc${suff}
