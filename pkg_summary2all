@@ -1,16 +1,38 @@
 #!/bin/sh
 
-#for i in pkgdir depends build_depends conflicts index htmlname homepage wildcard comment license onlyfor notfor maintainer categories
-
 set -e
 
-for i in pkgdir depends build_depends conflicts index homepage comment license onlyfor notfor maintainer categories plist descr
+#
+usage (){
+    echo 'usage: pkg_summary2all <bin|src> <files...>'
+}
+
+if test $# -gt 2 || test _$1 '!=' _bin -a _$1 '!=' _src
+then
+    usage
+    exit 1
+fi
+
+#
+binsrc=$1
+shift;
+
+if test _$binsrc = _bin
+then
+    fields='pkgpath depends conflicts comment build_date categories homepage license os_version pkgtools_version provides requires description'
+else
+    fields='pkgpath depends build_depends conflicts index homepage comment license onlyfor notfor maintainer categories plist description'
+fi
+
+export PKG_SUMMARY_TYPE=$binsrc
+
+for i in $fields
 do
-    printf "%s" $i...
-    ./info2dict-index $i "$@"
+    printf "index for field %s" $i...
+    ./pkg_summary2field-index $i "$@"
     printf "done\n"
 done
 
-printf "%s" 'descr...'
-./info2dict "$@"
+printf "%s" 'information about packages...'
+./pkg_summary2dict "$@"
 printf "done\n"
