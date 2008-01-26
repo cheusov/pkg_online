@@ -18,7 +18,7 @@ tmpfn=/tmp/pkgdirs2info.$$
 trap 'rm -f $tmpfn' 0 1 2 15
 
 ############################################################
-summary_data2info (){
+summary_data2summary (){
     awk '
     function normalize (w){
 	return toupper(w)
@@ -56,14 +56,14 @@ cd_and_print_summary_data (){
     ( cd $1 && ${MAKE} print-summary-data; ) > "$tmpfn";
 }
 
-generate_info (){
+generate_summary (){
     # general information
     if cd_and_print_summary_data $1 > "$tmpfn"; then
 	pkgname=`awk '$1 == "index" {sub(/-[^-]*$/, "", $3); print $3}' "$tmpfn"`
 	pkgpath=`awk '$1 == "index" {print $2}' "$tmpfn"`
 	echo "PKGNAME=$pkgname"
 	echo "PKGPATH=$pkgpath"
-	cat "$tmpfn" | summary_data2info
+	cat "$tmpfn" | summary_data2summary
 
 	plist_fn=$1/PLIST
 	if test -f $plist_fn; then
@@ -76,6 +76,6 @@ generate_info (){
 
 ############################################################
 for i; do
-    generate_info "$i"
+    generate_summary "$i"
     echo '' # empty line - separator 
 done

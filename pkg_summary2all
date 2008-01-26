@@ -1,0 +1,16 @@
+#!/bin/sh
+
+#for i in pkgdir depends build_depends conflicts index htmlname homepage wildcard comment license onlyfor notfor maintainer categories
+
+set -e
+
+for i in pkgdir depends build_depends conflicts index homepage comment license onlyfor notfor maintainer categories plist descr
+do
+    printf "%s" $i...
+    ./info2dict-index $i "$@"
+    printf "done\n"
+done
+
+printf "%s" 'descr...'
+./info2dict "$@"
+printf "done\n"
