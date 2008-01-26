@@ -18,15 +18,10 @@ tmpfn=/tmp/pkgdirs2info.$$
 trap 'rm -f $tmpfn' 0 1 2 15
 
 ############################################################
-capitalize (){
-    echo $1 | awk '{print toupper(substr($0, 1, 1)) substr($0, 2)}'
-}
-
 summary_data2info (){
     awk '
     function normalize (w){
 	return toupper(w)
-#	return toupper(substr(w, 1, 1)) substr(w, 2)
     }
 
     BEGIN {
