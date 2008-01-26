@@ -30,6 +30,6 @@ runpipe0 \
     ./pkg_summary4view "$@" '|' \
     summary2dict '|' \
     dictfmt -c5 -q -s "Information about pkgsrc${msg} packages" \
-      --allchars --without-headword --without-header \
-      -u 'http://www.pkgsrc.org' \
-      --columns 0 pkgsrc${suff}
+       --allchars --without-headword --without-header \
+       -u 'http://www.pkgsrc.org' \
+       --columns 0 pkgsrc${suff}
