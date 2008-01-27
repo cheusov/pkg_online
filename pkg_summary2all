@@ -1,5 +1,8 @@
 #!/bin/sh
 
+. ./pkg_online_fields.sh
+
+#
 set -e
 
 #
@@ -19,9 +22,9 @@ shift;
 
 if test _$binsrc = _bin
 then
-    fields='PKGPATH DEPENDS CONFLICTS COMMENT BUILD_DATE CATEGORIES HOMEPAGE LICENSE OS_VERSION PKGTOOLS_VERSION PROVIDES REQUIRES DESCRIPTION'
+    fields="$fields_bin"
 else
-    fields='PKGPATH DEPENDS BUILD_DEPENDS CONFLICTS INDEX HOMEPAGE COMMENT LICENSE ONLYFOR NOTFOR MAINTAINER CATEGORIES PLIST DESCRIPTION'
+    fields="$fields_src"
 fi
 
 export PKG_SUMMARY_TYPE=$binsrc

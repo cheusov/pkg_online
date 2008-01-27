@@ -1,0 +1,27 @@
+#!/bin/sh
+
+. ./pkg_online_fields.sh
+
+usage (){
+    echo 'usage: pkg_online_mkconf <bin|src>'
+}
+
+if test $# -ne 1; then
+    usage
+    exit 1
+fi
+
+database (){
+cat <<EOF
+   database {
+      index  "$1.index"
+      data   "$1.dict"
+   }
+EOF
+}
+
+cmd="echo \$fields_$1"
+fields=`eval $cmd`
+for f in $fields; do
+    database $f
+done
