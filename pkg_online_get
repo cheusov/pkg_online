@@ -3,6 +3,8 @@
 set -e
 . pipestatus
 
+export LC_ALL=C 
+
 # temp dir
 tmp_dir="/tmp/pkg_online_get.$$"
 trap "rm -rf $tmp_dir" 0 1 2 3 15
@@ -24,7 +26,7 @@ shift
 
 #
 extract_pkgname (){
-    awk '{print $4}'
+    awk -F'\t' 'NF == 4 {print $4}'
 }
 
 # 
@@ -33,7 +35,7 @@ run_query (){
 
     if runpipe0 \
 	dict -h localhost -p 26280 -m -f -d "$1" -s "$2" "$3" '|' \
-	extract_pkgname 2> "$log_fn"
+	extract_pkgname '|' sort '|' uniq 2> "$log_fn"
     then
 	return 0
     else
@@ -46,6 +48,18 @@ run_query (){
 		return $pipestatus_1;;
 	esac
     fi
+}
+
+#
+mmmm (){
+    # args: $1 - count
+    awk '$1 == '"$1"' {print $0}'
+}
+
+#
+intersect (){
+    # args: $1 - count
+    runpipe0 sort $tmp_dir/*.txt '|' uniq -c '|' mmmm "$1" > "$result_fn"
 }
 
 # search images...
@@ -70,4 +84,12 @@ for q in "$@"; do
     i=$(($i+1))
 done
 
-sleep 100
+result_fn="$tmp_dir"/result
+intersect "$i" > "$result_fn"
+
+if test -s "$result_fn"; then
+    cat "$result_fn"
+else
+    echo "No matches found" 1>&2
+    exit 20
+fi
