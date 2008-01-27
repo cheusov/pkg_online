@@ -1,0 +1,73 @@
+#!/bin/sh
+
+set -e
+. pipestatus
+
+# temp dir
+tmp_dir="/tmp/pkg_online_get.$$"
+trap "rm -rf $tmp_dir" 0 1 2 3 15
+mkdir -m 700 "$tmp_dir"
+
+#
+usage (){
+    echo 'usage: pkg_online_get <bin|src> [search_images...]'
+}
+
+if test $# -le 1; then
+    usage
+    exit 1
+fi
+
+#
+binsrc=$1
+shift
+
+#
+extract_pkgname (){
+    awk '{print $4}'
+}
+
+# 
+run_query (){
+    # args: dbname strategy query
+
+    if runpipe0 \
+	dict -h localhost -p 26280 -m -f -d "$1" -s "$2" "$3" '|' \
+	extract_pkgname 2> "$log_fn"
+    then
+	return 0
+    else
+	case "$pipestatus_1" in
+	    20)
+		echo "No matches for db:$1 strategy:$2 query:$3" 1>&2
+		return 20;;
+	    *)
+		cat "$log_fn" 1>&2
+		return $pipestatus_1;;
+	esac
+    fi
+}
+
+# search images...
+i=0
+for q in "$@"; do
+    field=`echo $q | cut -d: -f1`
+    strategy=`echo $q | cut -d: -f2`
+    query=`echo $q | cut -d: -f3`
+
+    if test _ = _"$field" -a _ = _"$strategy" -a _ = _"$query"; then
+	printf 'query format: <field:strategy:query>\n'
+	exit 2
+    fi
+
+    dbname="pkgsrc-$binsrc-$field"
+
+    res_fn=$tmp_dir/$i.txt
+    log_fn=$tmp_dir/$i.log
+
+    run_query "$dbname" "$strategy" "$query" > $res_fn
+
+    i=$(($i+1))
+done
+
+sleep 100
