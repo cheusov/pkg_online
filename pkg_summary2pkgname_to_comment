@@ -1,0 +1,39 @@
+#!/bin/sh
+
+set -e
+. pipestatus
+
+if test -n "$PKG_SUMMARY_TYPE"; then
+    suff="-$PKG_SUMMARY_TYPE"
+     msg=" $PKG_SUMMARY_TYPE"
+fi
+
+#if test "$#" = 0; then
+#    echo 'usage: pkg_summary2field-index [files...]' 1>&2
+#fi
+
+summary2dict (){
+awk '
+/^PKGNAME=/ {
+    pkgname = $1
+    sub(/^PKGNAME=/, "", pkgname)
+    if (pkgname ~ /[0-9]$/){
+	sub(/-[^-]*$/, "", pkgname)
+    }
+
+    next
+}
+
+/^COMMENT=/ {
+    sub(/^COMMENT=/, "")
+    printf "_____\n\n%s\n%s\n", pkgname, $0
+}
+' "$@"
+}
+
+runpipe0 \
+    summary2dict "$@" '|' \
+    dictfmt -c5 -q -s "pkgsrc packages: pkgname2comment database" \
+        --allchars --index-data-separator '|%%|' \
+        --without-header --without-headword -u 'http://www.pkgsrc.org' \
+        pkgsrc${suff}-pkgname2comment
