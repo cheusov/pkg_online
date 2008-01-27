@@ -42,8 +42,11 @@ $1 == (field ":") && NF > 1 {
     next
 }
 
-field == "plist" && $1 == (field ":"), NF == 0 {
-    printf "_____\n\n%s\n", substr($1, 3) "|%%|" pkgname
+field == "PLIST" && $1 == (field ":"), NF == 0 {
+    if (NF > 0 && $1 != (field ":")){
+        sub(/^ +/, "")
+        printf "_____\n\n%s\n", $0 "|%%|" pkgname
+    }
     next
 }
 
