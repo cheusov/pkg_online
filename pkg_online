@@ -33,7 +33,7 @@ fi
 #
 comment_fn=$tmp_dir/comment
 pkgname2comment (){
-    dict -f "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
+    dict -f -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
 	-d pkgsrc-$binsrc-pkgname2comment "$@" |
     awk -F'\t' '
     NF == 4 {skip = 0}
