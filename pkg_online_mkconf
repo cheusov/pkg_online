@@ -3,7 +3,7 @@
 . ./pkg_online_fields.sh
 
 usage (){
-    echo 'usage: pkg_online_mkconf <bin|src> <db_dir>'
+    echo 'usage: pkg_online_mkconf <bin|src> <db_dir>' 1>&2
 }
 
 if test $# -ne 2; then

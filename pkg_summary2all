@@ -7,7 +7,7 @@ set -e
 
 #
 usage (){
-    echo 'usage: pkg_summary2all <bin|src> <files...>'
+    echo 'usage: pkg_summary2all <bin|src> <files...>' 1>&2
 }
 
 if test $# -gt 2 || test _$1 '!=' _bin -a _$1 '!=' _src
