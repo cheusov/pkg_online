@@ -1,0 +1,22 @@
+#!/bin/sh
+
+set -e
+
+export LC_ALL=C 
+
+#
+usage (){
+    echo 'usage: pkg_online_info <bin|src> [packages...]' 1>&2
+}
+
+if test $# -lt 2; then
+    usage
+    exit 1
+fi
+
+#
+binsrc=$1
+shift
+
+#
+dict -h localhost -p 26280 -d pkgsrc-"$binsrc"-info "$@"
