@@ -3,24 +3,30 @@
 . ./pkg_online_fields.sh
 
 usage (){
-    echo 'usage: pkg_online_mkconf <bin|src>'
+    echo 'usage: pkg_online_mkconf <bin|src> <db_dir>'
 }
 
-if test $# -ne 1; then
+if test $# -ne 2; then
     usage
     exit 1
 fi
 
+binsrc=$1
+db_dir=$2
+
+shift
+shift
+
 database (){
 cat <<EOF
-   database {
-      index  "$1.index"
-      data   "$1.dict"
-   }
+database pkgsrc-$binsrc-$1 {
+   index  "$db_dir/pkgsrc-$binsrc-$1.index"
+   data   "$db_dir/pkgsrc-$binsrc-$1.dict"
+}
 EOF
 }
 
-cmd="echo \$fields_$1"
+cmd="echo \$fields_$binsrc"
 fields=`eval $cmd`
 for f in $fields; do
     database $f
