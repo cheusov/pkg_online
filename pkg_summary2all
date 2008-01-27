@@ -33,7 +33,7 @@ export PKG_SUMMARY_TYPE=$binsrc
 for i in $fields
 do
     printf "index for field %s" $i...
-    ./pkg_summary2field-index $i "$@"
+    pkg_summary2field-index $i "$@"
     printf "done\n"
 done
 
