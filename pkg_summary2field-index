@@ -9,7 +9,7 @@ if test -n "$PKG_SUMMARY_TYPE"; then
 fi
 
 if test "$#" = 0; then
-    echo 'usage: pkg_summary2field-index <comment|maintainer|...> [files...]'
+    echo 'usage: pkg_summary2field-index <comment|maintainer|...> [files...]' 1>&2
 fi
 
 field=$1
@@ -19,7 +19,9 @@ summary2dict (){
 awk -v field="$field" '
 /^[^ ]/ && $1 ~ /^PKGNAME:$/ {
     pkgname = $2
-    sub(/-[^-]*$/, "", pkgname)
+    if (pkgname ~ /[0-9]$/){
+	sub(/-[^-]*$/, "", pkgname)
+    }
 
     next
 }
