@@ -74,7 +74,7 @@ runpipe0 \
     ./pkg_summary4view "$@" '|' \
     replace_8bit_symbs '|' \
     summary2dict '|' \
-    dictfmt -c5 -q -s "pkgsrc packages: $field index" \
+    dictfmt -c5 -q -s "$field index" \
        --allchars --index-data-separator '|%%|' \
        --without-header --without-headword -u 'http://www.pkgsrc.org' \
        pkgsrc${suff}-index-"$field"
