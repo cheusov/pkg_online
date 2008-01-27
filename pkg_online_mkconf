@@ -19,7 +19,7 @@ shift
 
 database (){
 cat <<EOF
-database pkgsrc-$binsrc-$1 {
+database pkgsrc-$binsrc-index-$1 {
    index  "$db_dir/pkgsrc-$binsrc-index-$1.index"
    data   "$db_dir/pkgsrc-$binsrc-index-$1.dict"
 }

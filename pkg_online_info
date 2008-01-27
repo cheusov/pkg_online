@@ -2,6 +2,8 @@
 
 set -e
 
+. pkg_online_server.sh
+
 export LC_ALL=C 
 
 #
@@ -19,4 +21,4 @@ binsrc=$1
 shift
 
 #
-dict -h localhost -p 26280 -d pkgsrc-"$binsrc"-info "$@"
+dict -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" -d pkgsrc-"$binsrc"-info "$@"

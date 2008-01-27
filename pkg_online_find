@@ -34,7 +34,8 @@ run_query (){
     # args: dbname strategy query
 
     if runpipe0 \
-	dict -h localhost -p 26280 -m -f -d "$1" -s "$2" "$3" '|' \
+	dict -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
+	    -m -f -d "$1" -s "$2" "$3" '|' \
 	extract_pkgname '|' sort '|' uniq 2> "$log_fn"
     then
 	return 0
@@ -74,7 +75,7 @@ for q in "$@"; do
 	exit 2
     fi
 
-    dbname="pkgsrc-$binsrc-$field"
+    dbname="pkgsrc-$binsrc-index-$field"
 
     res_fn=$tmp_dir/$i.txt
     log_fn=$tmp_dir/$i.log
