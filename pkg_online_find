@@ -2,6 +2,7 @@
 
 set -e
 . pipestatus
+. pkg_online_server.sh
 
 export LC_ALL=C 
 
