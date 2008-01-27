@@ -3,6 +3,8 @@
 set -e
 . pipestatus
 
+export LC_ALL=C
+
 if test -n "$PKG_SUMMARY_TYPE"; then
     suff="-$PKG_SUMMARY_TYPE"
      msg=" $PKG_SUMMARY_TYPE"
@@ -64,8 +66,13 @@ field == "DESCRIPTION" && $1 == (field ":"), NF == 0 {
 ' "$@"
 }
 
+replace_8bit_symbs (){
+    awk '{gsub(/[\200-\377]/, "<bad-symbol>"); print}'
+}
+
 runpipe0 \
     ./pkg_summary4view "$@" '|' \
+    replace_8bit_symbs '|' \
     summary2dict '|' \
     dictfmt -c5 -q -s "pkgsrc packages: $field index" \
        --allchars --index-data-separator '|%%|' \
