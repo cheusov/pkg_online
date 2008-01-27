@@ -20,14 +20,31 @@ shift
 database (){
 cat <<EOF
 database pkgsrc-$binsrc-$1 {
-   index  "$db_dir/pkgsrc-$binsrc-$1.index"
-   data   "$db_dir/pkgsrc-$binsrc-$1.dict"
+   index  "$db_dir/pkgsrc-$binsrc-index-$1.index"
+   data   "$db_dir/pkgsrc-$binsrc-index-$1.dict"
 }
 EOF
 }
 
+# indices
 cmd="echo \$fields_$binsrc"
 fields=`eval $cmd`
 for f in $fields; do
     database $f
 done
+
+# whole information about all packages
+cat <<EOF
+database pkgsrc-$binsrc-info {
+   index  "$db_dir/pkgsrc-$binsrc-info.index"
+   data   "$db_dir/pkgsrc-$binsrc-info.dict"
+}
+EOF
+
+# pkg2comment database
+cat <<EOF
+database pkgsrc-$binsrc-pkgname2comment {
+   index  "$db_dir/pkgsrc-$binsrc-pkgname2comment.index"
+   data   "$db_dir/pkgsrc-$binsrc-pkgname2comment.dict"
+}
+EOF

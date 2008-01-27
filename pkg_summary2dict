@@ -32,4 +32,4 @@ runpipe0 \
     dictfmt -c5 -q -s "Information about pkgsrc${msg} packages" \
        --allchars --without-headword --without-header \
        -u 'http://www.pkgsrc.org' \
-       --columns 0 pkgsrc${suff}
+       --columns 0 pkgsrc${suff}-info

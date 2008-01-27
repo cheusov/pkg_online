@@ -65,4 +65,4 @@ runpipe0 \
     dictfmt -c5 -q -s "pkgsrc packages: $field index" \
        --allchars --index-data-separator '|%%|' \
        --without-header --without-headword -u 'http://www.pkgsrc.org' \
-       pkgsrc${suff}-"$field"
+       pkgsrc${suff}-index-"$field"

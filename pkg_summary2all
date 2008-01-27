@@ -29,6 +29,7 @@ fi
 
 export PKG_SUMMARY_TYPE=$binsrc
 
+# fields indices
 for i in $fields
 do
     printf "index for field %s" $i...
@@ -36,6 +37,12 @@ do
     printf "done\n"
 done
 
+# whole information
 printf "%s" 'information about packages...'
 ./pkg_summary2dict "$@"
+printf "done\n"
+
+# pkgname2comment
+printf 'pkgname2comment...'
+./pkg_summary2pkgname_to_comment "$@"
 printf "done\n"
