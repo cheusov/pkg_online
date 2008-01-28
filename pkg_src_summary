@@ -3,6 +3,7 @@
 set -e
 
 ############################################################
+# user settable variables
 if test -z "$PKGSRCDIR"; then
     PKGSRCDIR=/usr/pkgsrc
 fi
@@ -32,6 +33,10 @@ summary_data2summary (){
 	next
     }
 
+    $1 == "index" {
+	next
+    }
+
     $1 == "descr" {
 	fn = $3
 	while (0 < ret = (getline < fn)){
@@ -53,29 +58,40 @@ summary_data2summary (){
 }
 
 cd_and_print_summary_data (){
+    # $1 - pkgpath
     ( cd $1 && ${MAKE} print-summary-data; ) > "$tmpfn";
 }
 
 generate_summary (){
     # general information
     if cd_and_print_summary_data $1 > "$tmpfn"; then
-	pkgname=`awk '$1 == "index" {sub(/-[^-]*$/, "", $3); print $3}' "$tmpfn"`
+	pkgname=`awk '$1 == "index" {print $3}' "$tmpfn"`
 	pkgpath=`awk '$1 == "index" {print $2}' "$tmpfn"`
 	echo "PKGNAME=$pkgname"
 	echo "PKGPATH=$pkgpath"
 	cat "$tmpfn" | summary_data2summary
 
+	# not expanding PLIST yet
 	plist_fn=$1/PLIST
 	if test -f $plist_fn; then
 	    awk '/^[^@]/ {print "PLIST=" $0}' $plist_fn
 	fi
+
+	echo '' # empty line - separator 
     else
 	printf "Bad package $1, skipped\n" 1>&2
     fi
 }
 
 ############################################################
-for i; do
-    generate_summary "$i"
-    echo '' # empty line - separator 
-done
+if test $# -eq 0; then
+    # processing stdin
+    while read pkgpath; do
+	generate_summary "$pkgpath"
+    done
+else
+    # processing arguments
+    for pkgpath in "$@"; do
+	generate_summary "$pkgpath"
+    done
+fi
