@@ -3,6 +3,7 @@
 set -e
 . pipestatus
 . pkg_online_server.sh
+. pkg_online_summary_type.sh
 
 export LC_ALL=C 
 
@@ -13,17 +14,13 @@ mkdir -m 700 "$tmp_dir"
 
 #
 usage (){
-    echo 'usage: pkg_online_get <bin|src> [search_images...]' 1>&2
+    echo 'usage: pkg_online_get query1 [query2...]' 1>&2
 }
 
-if test $# -le 1; then
+if test $# -lt 1; then
     usage
     exit 1
 fi
-
-#
-binsrc=$1
-shift
 
 #
 extract_pkgname (){
@@ -43,7 +40,7 @@ run_query (){
     else
 	case "$pipestatus_1" in
 	    20)
-		echo "No matches for db:$1 strategy:$2 query:$3" 1>&2
+		echo "No matches found for db:$1 strategy:$2 query:$3" 1>&2
 		return 20;;
 	    *)
 		cat "$log_fn" 1>&2
@@ -76,7 +73,7 @@ for q in "$@"; do
 	exit 2
     fi
 
-    dbname="pkgsrc-$binsrc-index-$field"
+    dbname="pkgsrc-${PKG_SUMMARY_TYPE}-index-$field"
 
     res_fn=$tmp_dir/$i.txt
     log_fn=$tmp_dir/$i.log
