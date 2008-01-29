@@ -1,14 +1,14 @@
 #!/bin/sh
 
 set -e
+
 . pipestatus
+. pkg_online_summary_type.sh
 
 export LC_ALL=C
 
-if test -n "$PKG_SUMMARY_TYPE"; then
-    suff="-$PKG_SUMMARY_TYPE"
-     msg=" $PKG_SUMMARY_TYPE"
-fi
+suff="-$PKG_SUMMARY_TYPE"
+msg=" $PKG_SUMMARY_TYPE"
 
 if test "$#" = 0; then
     echo 'usage: pkg_summary2field-index <comment|maintainer|...> [files...]' 1>&2
@@ -18,9 +18,23 @@ field=$1
 shift
 
 summary2dict (){
-awk -v field="$field" '
-/^[^ ]/ && $1 ~ /^PKGNAME:$/ {
+awk -v field="$field" -F= '
+function print_description (){
+    printf "_____\n\n%s\n", substr(descr, 2) "|%%|" pkgname
+    descr = ""
+    last  = ""
+}
+
+$1 != last && last == "DESCRIPTION" {
+    print_description()
+}
+
+$1 == "PKGNAME" {
+    last    = $1
     pkgname = $2
+
+    sub(/^[^=]*=/, "")
+
     if (pkgname ~ /[0-9]$/){
 	sub(/-[^-]*$/, "", pkgname)
     }
@@ -28,41 +42,44 @@ awk -v field="$field" '
     next
 }
 
-field ~ /^(ONLY|NOT)FOR$/ && $1 == (field ":") && NF > 1 {
+field ~ /^(ONLY|NOT)FOR$/ && $1 == field && NF > 1 {
+    last = $1
+
     if ($2 == "any"){
 	next
     }
 
-    $1 = ""
-    printf "_____\n\n%s\n", substr($0, 2) "|%%|" pkgname
+    sub(/^[^=]*=/, "")
+
+    printf "_____\n\n%s\n", $0 "|%%|" pkgname
     next
 }
 
-$1 == (field ":") && NF > 1 {
-    $1 = ""
-    printf "_____\n\n%s\n", substr($0, 2) "|%%|" pkgname
+field == "DESCRIPTION" && $1 == field {
+    last = $1
+
+    sub(/^[^=]*=/, "")
+
+    descr = descr " " $0
+
     next
 }
 
-field == "PLIST" && $1 == (field ":"), NF == 0 {
-    if (NF > 0 && $1 != (field ":")){
-        sub(/^ +/, "")
-        printf "_____\n\n%s\n", $0 "|%%|" pkgname
+$1 == field && NF > 1 {
+    last = $1
+
+    sub(/^[^=]*=/, "")
+
+    printf "_____\n\n%s\n", $0 "|%%|" pkgname
+    next
+}
+
+END {
+    if (last == "DESCRIPTION") {
+        print_description()
     }
-    next
 }
 
-field == "DESCRIPTION" && $1 == (field ":"), NF == 0 {
-    if ($0 ~ /^  /){
-	descr = descr " " $0
-    }
-
-    if (NF == 0){
-	printf "_____\n\n%s\n", substr(descr, 2) "|%%|" pkgname
-	descr = ""
-    }
-    next
-}
 ' "$@"
 }
 
@@ -71,8 +88,7 @@ replace_8bit_symbs (){
 }
 
 runpipe0 \
-    ./pkg_summary4view "$@" '|' \
-    replace_8bit_symbs '|' \
+    replace_8bit_symbs "$@" '|' \
     summary2dict '|' \
     dictfmt -c5 -q -s "$field index" \
        --allchars --index-data-separator '|%%|' \
