@@ -1,50 +1,51 @@
 #!/bin/sh
 
-. ./pkg_online_fields.sh
+. pkg_online_fields.sh
+. pkg_online_summary_type.sh
 
 usage (){
-    echo 'usage: pkg_online_mkconf <bin|src> <db_dir>' 1>&2
+    echo 'usage: pkg_online_mkconf <db_dir>' 1>&2
 }
 
-if test $# -ne 2; then
+if test $# -ne 1; then
     usage
     exit 1
 fi
 
-binsrc=$1
-db_dir=$2
-
-shift
+db_dir=$1
 shift
 
-database (){
+index_database (){
 cat <<EOF
-database pkgsrc-$binsrc-index-$1 {
-   index  "$db_dir/pkgsrc-$binsrc-index-$1.index"
-   data   "$db_dir/pkgsrc-$binsrc-index-$1.dict"
+# index database for field $1
+database pkgsrc-$PKG_SUMMARY_TYPE-index-$1 {
+   index  "$db_dir/pkgsrc-$PKG_SUMMARY_TYPE-index-$1.index"
+   data   "$db_dir/pkgsrc-$PKG_SUMMARY_TYPE-index-$1.dict"
 }
 EOF
 }
 
-# indices
-cmd="echo \$fields_$binsrc"
-fields=`eval $cmd`
-for f in $fields; do
-    database $f
-done
-
 # whole information about all packages
 cat <<EOF
-database pkgsrc-$binsrc-info {
-   index  "$db_dir/pkgsrc-$binsrc-info.index"
-   data   "$db_dir/pkgsrc-$binsrc-info.dict"
+# MAIN database
+database pkgsrc-$PKG_SUMMARY_TYPE-info {
+   index  "$db_dir/pkgsrc-$PKG_SUMMARY_TYPE-info.index"
+   data   "$db_dir/pkgsrc-$PKG_SUMMARY_TYPE-info.dict"
 }
 EOF
 
 # pkg2comment database
 cat <<EOF
-database pkgsrc-$binsrc-pkgname2comment {
-   index  "$db_dir/pkgsrc-$binsrc-pkgname2comment.index"
-   data   "$db_dir/pkgsrc-$binsrc-pkgname2comment.dict"
+# PKGNAME2COMMENT database
+database pkgsrc-$PKG_SUMMARY_TYPE-pkgname2comment {
+   index  "$db_dir/pkgsrc-$PKG_SUMMARY_TYPE-pkgname2comment.index"
+   data   "$db_dir/pkgsrc-$PKG_SUMMARY_TYPE-pkgname2comment.dict"
 }
 EOF
+
+# indices
+cmd="echo \$fields_$PKG_SUMMARY_TYPE"
+fields=`eval $cmd`
+for f in $fields; do
+    index_database $f
+done
