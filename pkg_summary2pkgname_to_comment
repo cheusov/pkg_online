@@ -1,18 +1,16 @@
 #!/bin/sh
 
 set -e
+
 . pipestatus
+. pkg_online_summary_type.sh
 
-if test -n "$PKG_SUMMARY_TYPE"; then
-    suff="-$PKG_SUMMARY_TYPE"
-     msg=" $PKG_SUMMARY_TYPE"
-fi
+export LC_ALL=C
 
-#if test "$#" = 0; then
-#    echo 'usage: pkg_summary2field-index [files...]' 1>&2
-#fi
+suff="-$PKG_SUMMARY_TYPE"
+msg=" $PKG_SUMMARY_TYPE"
 
-summary2dict (){
+summary2dict () {
 awk '
 /^PKGNAME=/ {
     pkgname = $1
