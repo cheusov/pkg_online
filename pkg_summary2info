@@ -27,7 +27,7 @@ awk '
 
 {
     print
-}'
+}' "$@"
 }
 
 runpipe0 \
