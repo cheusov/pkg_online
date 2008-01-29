@@ -1,12 +1,14 @@
 #!/bin/sh
 
 set -e
-. pipestatus
 
-if test -n "$PKG_SUMMARY_TYPE"; then
-    suff="-$PKG_SUMMARY_TYPE"
-     msg=" $PKG_SUMMARY_TYPE"
-fi
+. pipestatus
+. pkg_online_summary_type.sh
+
+export LC_ALL=C
+
+suff="-$PKG_SUMMARY_TYPE"
+msg=" $PKG_SUMMARY_TYPE"
 
 summary2dict () {
 awk '
@@ -29,7 +31,7 @@ awk '
 }
 
 runpipe0 \
-    ./pkg_summary4view "$@" '|' \
+    pkg_summary4view "$@" '|' \
     summary2dict '|' \
     dictfmt -c5 -q -s "Information about pkgsrc${msg} packages" \
        --allchars --without-headword --without-header \
