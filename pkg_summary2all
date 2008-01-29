@@ -1,33 +1,11 @@
 #!/bin/sh
 
-. ./pkg_online_fields.sh
-
-#
 set -e
 
-#
-usage (){
-    echo 'usage: pkg_summary2all <bin|src> <files...>' 1>&2
-}
+. pkg_online_fields.sh
+. pkg_online_summary_type.sh
 
-if test $# -gt 2 || test _$1 '!=' _bin -a _$1 '!=' _src
-then
-    usage
-    exit 1
-fi
-
-#
-binsrc=$1
-shift;
-
-if test _$binsrc = _bin
-then
-    fields="$fields_bin"
-else
-    fields="$fields_src"
-fi
-
-export PKG_SUMMARY_TYPE=$binsrc
+eval fields="\$fields_$PKG_SUMMARY_TYPE"
 
 # fields indices
 for i in $fields
@@ -39,10 +17,10 @@ done
 
 # whole information
 printf "%s" 'information about packages...'
-./pkg_summary2dict "$@"
+pkg_summary2info "$@"
 printf "done\n"
 
 # pkgname2comment
 printf 'pkgname2comment...'
-./pkg_summary2pkgname_to_comment "$@"
+pkg_summary2pkgname_to_comment "$@"
 printf "done\n"
