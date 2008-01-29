@@ -12,6 +12,7 @@ msg=" $PKG_SUMMARY_TYPE"
 
 if test "$#" = 0; then
     echo 'usage: pkg_summary2field-index <comment|maintainer|...> [files...]' 1>&2
+    exit 1
 fi
 
 field=$1
