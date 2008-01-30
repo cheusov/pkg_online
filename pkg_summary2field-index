@@ -2,8 +2,9 @@
 
 set -e
 
-. pipestatus
+. pkg_online_env.sh
 . pkg_online_summary_type.sh
+. pipestatus
 
 export LC_ALL=C
 
