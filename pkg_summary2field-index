@@ -89,7 +89,8 @@ replace_8bit_symbs (){
 }
 
 runpipe0 \
-    replace_8bit_symbs "$@" '|' \
+    cat "$@" '|' \
+    replace_8bit_symbs '|' \
     summary2dict '|' \
     dictfmt -c5 -q -s "$field index" \
        --allchars --index-data-separator '|%%|' \
