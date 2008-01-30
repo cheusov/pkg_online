@@ -17,3 +17,8 @@ fi
 if test -z "$PKG_SUMMARY_TYPE"; then
     PKG_SUMMARY_TYPE=src
 fi
+
+# default dictionary protocol client
+if test -z "$PKG_ONLINE_DICT"; then
+    PKG_ONLINE_DICT=dict
+fi
