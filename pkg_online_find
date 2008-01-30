@@ -59,12 +59,22 @@ intersect (){
 cnt=0
 for q in "$@"; do
     field=`echo $q | cut -d: -f1`
-    strategy=`echo $q | cut -d: -f2`
+    strat=`echo $q | cut -d: -f2`
     query=`echo $q | cut -d: -f3`
+
+    # short names for strategies
+    if test -z "$strat"; then
+	strat=empty
+    fi
+
+    synonym="pkg_online_strat__$strat"
+    if eval test "\$$synonym"; then
+	eval strat=\$$synonym
+    fi
 
     res_fn=$tmp_dir/$cnt.txt
 
-    $PKG_ONLINE_CLIENT "$field:$strategy:$query" > $res_fn
+    $PKG_ONLINE_CLIENT "$field:$strat:$query" > $res_fn
 
     cnt=$(($cnt+1))
 done
