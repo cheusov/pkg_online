@@ -89,10 +89,10 @@ extract_pkgname (){
 run_query (){
     # $1: dbname:strategy:query
     field="`echo $1 | cut -d: -f1`"
-    strategy="`echo $1 | cut -d: -f2`"
+    strat="`echo $1 | cut -d: -f2`"
     query="`echo $1 | cut -d: -f3`"
 
-    if test _ = _"$field" -a _ = _"$strategy" -a _ = _"$query"; then
+    if test _ = _"$field" -a _ = _"$strat" -a _ = _"$query"; then
 	printf 'query format: <field:strategy:query>\n'
 	exit 2
     fi
@@ -104,7 +104,7 @@ run_query (){
 
     if runpipe0 \
 	$PKG_ONLINE_DICT -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
-	    -m -f -d "$dbname" -s "$strategy" "$query" '|' \
+	    -m -f -d "$dbname" -s "$strat" "$query" '|' \
 	extract_pkgname '|' sort '|' uniq > "$res_fn" 2> "$log_fn"
    then
 	cat "$res_fn"
@@ -112,7 +112,7 @@ run_query (){
     else
 	case "$pipestatus_1" in
 	    20)
-		echo "No matches found for db:$1 strategy:$2 query:$3" 1>&2
+		echo "No matches found for field:$field strategy:$strat query:$query" 1>&2
 		return 20;;
 	    *)
 		cat "$log_fn" 1>&2
