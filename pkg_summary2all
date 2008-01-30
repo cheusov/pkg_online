@@ -24,8 +24,6 @@
 set -e
 
 . pkg_online_env.sh
-. pkg_online_fields.sh
-. pkg_online_summary_type.sh
 
 eval fields="\$fields_$PKG_SUMMARY_TYPE"
 

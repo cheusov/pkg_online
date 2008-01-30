@@ -24,8 +24,6 @@
 set -e
 
 . pkg_online_env.sh
-. pkg_online_fields.sh
-. pkg_online_summary_type.sh
 
 usage (){
     echo 'usage: pkg_online_mkconf <db_dir>' 1>&2

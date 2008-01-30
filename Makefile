@@ -20,8 +20,7 @@ SCRIPTS=	pkg_summary2pkgname_to_comment pkg_summary2info \
 		pkg_summary2field-index pkg_summary2all pkg_online_mkconf \
 		pkg_online_info pkg_online_find pkg_online_env.sh
 
-FILES=		pkg_online_summary_type.sh pkg_online_server.sh \
-		pkg_online_fields.sh README
+FILES=		README
 
 FILESDIR_README=		${DOCDIR}
 FILESMODE_pkg_online_env.sh=	${NONBINMODE}
