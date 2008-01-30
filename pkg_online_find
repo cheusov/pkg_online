@@ -29,46 +29,19 @@ set -e
 export LC_ALL=C 
 
 # temp dir
-tmp_dir="/tmp/pkg_online_get.$$"
+tmp_dir="/tmp/pkg_online_find.$$"
 trap "rm -rf $tmp_dir" 0 1 2 3 15
 mkdir -m 700 "$tmp_dir"
 
 #
 usage (){
-    echo 'usage: pkg_online_get query1 [query2...]' 1>&2
+    echo 'usage: pkg_online_find query1 [query2...]' 1>&2
 }
 
 if test $# -lt 1; then
     usage
     exit 1
 fi
-
-#
-extract_pkgname (){
-    awk -F'\t' 'NF == 4 {print $4}'
-}
-
-# 
-run_query (){
-    # args: dbname strategy query
-
-    if runpipe0 \
-	dict -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
-	    -m -f -d "$1" -s "$2" "$3" '|' \
-	extract_pkgname '|' sort '|' uniq 2> "$log_fn"
-    then
-	return 0
-    else
-	case "$pipestatus_1" in
-	    20)
-		echo "No matches found for db:$1 strategy:$2 query:$3" 1>&2
-		return 20;;
-	    *)
-		cat "$log_fn" 1>&2
-		return $pipestatus_1;;
-	esac
-    fi
-}
 
 #
 mmmm (){
@@ -83,29 +56,21 @@ intersect (){
 }
 
 # search images...
-i=0
+cnt=0
 for q in "$@"; do
     field=`echo $q | cut -d: -f1`
     strategy=`echo $q | cut -d: -f2`
     query=`echo $q | cut -d: -f3`
 
-    if test _ = _"$field" -a _ = _"$strategy" -a _ = _"$query"; then
-	printf 'query format: <field:strategy:query>\n'
-	exit 2
-    fi
+    res_fn=$tmp_dir/$cnt.txt
 
-    dbname="pkgsrc-${PKG_SUMMARY_TYPE}-index-$field"
+    $PKG_ONLINE_CLIENT "$field:$strategy:$query" > $res_fn
 
-    res_fn=$tmp_dir/$i.txt
-    log_fn=$tmp_dir/$i.log
-
-    run_query "$dbname" "$strategy" "$query" > $res_fn
-
-    i=$(($i+1))
+    cnt=$(($cnt+1))
 done
 
 result_fn="$tmp_dir"/result
-intersect "$i" > "$result_fn"
+intersect "$cnt" > "$result_fn"
 
 if test -s "$result_fn"; then
     cat "$result_fn"
