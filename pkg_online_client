@@ -26,6 +26,8 @@ set -e
 . pkg_online_env.sh
 . pipestatus
 
+export LC_ALL=C 
+
 args=`getopt fs $*`
 if [ $? -ne 0 ]; then
     echo 'usage: pkg_online_client [OPTIONS] [field:strategy:query]'
@@ -46,6 +48,12 @@ while [ $# -gt 0 ]; do
     shift
 done
 
+# temp dir
+tmp_dir="/tmp/pkg_online_get.$$"
+trap "rm -rf $tmp_dir" 0 1 2 3 15
+mkdir -m 700 "$tmp_dir"
+
+#
 extract_strat (){
     awk -F'\t' '{printf "%15s - %s\n", $3, $4}'
 }
@@ -58,12 +66,57 @@ extract_fields (){
 	}'
 }
 
+extract_pkgname (){
+    awk -F'\t' 'NF == 4 {print $4}'
+}
+
+run_query (){
+    # $1: dbname:strategy:query
+    field=`echo $1 | cut -d: -f1`
+    strategy=`echo $1 | cut -d: -f2`
+    query=`echo $1 | cut -d: -f3`
+
+    if test _ = _"$field" -a _ = _"$strategy" -a _ = _"$query"; then
+	printf 'query format: <field:strategy:query>\n'
+	exit 2
+    fi
+
+    dbname="pkgsrc-${PKG_SUMMARY_TYPE}-index-${field}"
+
+    res_fn=$tmp_dir/result.txt
+    log_fn=$tmp_dir/errors.log
+
+    if runpipe0 \
+	$PKG_ONLINE_DICT -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
+	    -m -f -d "$dbname" -s "$strategy" "$query" '|' \
+	extract_pkgname '|' sort '|' uniq > "$res_fn" 2> "$log_fn"
+    then
+	cat "$res_fn"
+	return 0
+    else
+	case "$pipestatus_1" in
+	    20)
+		echo "No matches found for db:$1 strategy:$2 query:$3" 1>&2
+		return 20;;
+	    *)
+		cat "$log_fn" 1>&2
+		return $pipestatus_1;;
+	esac
+    fi
+}
+
 if test $strats; then
-    runpipe0 dict -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
+    runpipe0 $PKG_ONLINE_DICT \
+	-h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
 	-f -S '|' extract_strat
 fi
 
 if test $dbs; then
-    runpipe0 dict -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
+    runpipe0 $PKG_ONLINE_DICT \
+	-h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
 	-f -D '|' extract_fields
 fi
+
+for q in "$@"; do
+    run_query "$q"
+done
