@@ -27,3 +27,24 @@ fi
 if test -z "$PKG_ONLINE_DICT"; then
     PKG_ONLINE_DICT=dict
 fi
+
+#
+set_if_not_set (){
+    # $1 - varname
+    # $2 - value
+    if eval test -z \$$1; then
+	eval $1="$2"
+    fi
+}
+
+set_if_not_set pkg_online_strat__empty exact
+set_if_not_set pkg_online_strat__p     prefix
+set_if_not_set pkg_online_strat__u     suffix
+set_if_not_set pkg_online_strat__s     substring
+set_if_not_set pkg_online_strat__r     re
+set_if_not_set pkg_online_strat__x     soundex
+set_if_not_set pkg_online_strat__w     word
+set_if_not_set pkg_online_strat__f     first
+set_if_not_set pkg_online_strat__l     last
+set_if_not_set pkg_online_strat__x     soundex
+set_if_not_set pkg_online_strat__v     lev
