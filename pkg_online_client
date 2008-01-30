@@ -28,28 +28,44 @@ set -e
 
 export LC_ALL=C 
 
-args=`getopt fs $*`
-if [ $? -ne 0 ]; then
-    echo 'usage: pkg_online_client [OPTIONS] [field:strategy:query]'
+usage () {
+cat <<EOF
+usage: pkg_online_client [OPTIONS] [field:strategy:query]
+OPTIONS:
+   -h         display this screen
+   -s         display available search strategies
+   -f         display available fields for search in
+EOF
+}
+
+if test $# -eq 0; then
+    usage
     exit 2
 fi
-set -- $args
 
-while [ $# -gt 0 ]; do
+while test $# -gt 0; do
     case "$1" in
         -s)
             strats=1;;
         -f)
             dbs=1;;
+        -h)
+            usage
+	    exit 0;;
+	-*)
+	    printf "Bad option %s\n" "$1" 1>&2
+	    exit 1;;
         --)
             shift
+	    break;;
+	*)
 	    break;;
     esac
     shift
 done
 
 # temp dir
-tmp_dir="/tmp/pkg_online_get.$$"
+tmp_dir="/tmp/pkg_online_client.$$"
 trap "rm -rf $tmp_dir" 0 1 2 3 15
 mkdir -m 700 "$tmp_dir"
 
@@ -72,9 +88,9 @@ extract_pkgname (){
 
 run_query (){
     # $1: dbname:strategy:query
-    field=`echo $1 | cut -d: -f1`
-    strategy=`echo $1 | cut -d: -f2`
-    query=`echo $1 | cut -d: -f3`
+    field="`echo $1 | cut -d: -f1`"
+    strategy="`echo $1 | cut -d: -f2`"
+    query="`echo $1 | cut -d: -f3`"
 
     if test _ = _"$field" -a _ = _"$strategy" -a _ = _"$query"; then
 	printf 'query format: <field:strategy:query>\n'
@@ -90,7 +106,7 @@ run_query (){
 	$PKG_ONLINE_DICT -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
 	    -m -f -d "$dbname" -s "$strategy" "$query" '|' \
 	extract_pkgname '|' sort '|' uniq > "$res_fn" 2> "$log_fn"
-    then
+   then
 	cat "$res_fn"
 	return 0
     else
