@@ -16,13 +16,41 @@ Sample of usage:
     # to see available fields
     pkg_online_client -f
 
-    # low-level search tool
+    # information about packages (PKGNAME here, not PKGPATH!)
+    pkg_online_info xxkb
+    pkg_online_info dict-server dict-client
+    pkg_online_info pkg_src_summary
+
+    # low-level search tool (full names for strategies and fields here)
     pkg_online_client 'MAINTAINER:prefix:jlam@'
     pkg_online_client 'PKGPATH:suffix:/dictem'
     pkg_online_client 'PKGPATH:substring:wip/p5-'
-    pkg_online_client 'COMMENT:substring:hash table'
+    pkg_online_client 'COMMENT:re:hash.*table'
 
-Basic concept:
+    # multiple queries together and short names for strats and fields
+    pkg_online_find '::dict'
+    pkg_online_find '::dict' 'm:p:cheusov'
+    pkg_online_find 'c:w:vpn'
+    pkg_online_find 'c:r:dns.*server'
+    pkg_online_find 'c:r:dns.*server' 'p:p:net'
+    
+    For the list of synonyms look inside pkg_online_env.sh.
+    Of course it is allowed to combine full names and short synonyms.
+    Synonyms are overridable by you, see pkg_online_env.sh.
+
+Environment variables:
+
+   PKG_ONLINE_SERVER () - dictionary server host name
+   PKG_ONLINE_PORT ()   - dictionary server port
+   PKG_ONLINE_CLIENT (pkg_online_client) - override it if you want
+      to implement offline search, new search strategies without
+      reimplemeneting dictionary server or anything you need.
+   PKG_ONLINE_DICT (dict) - path to dictionary protocol client.
+   PKG_SUMMARY_TYPE (src) - "src" or "bin" for source or binary summary
+      ('wip/pkg_src_summary' or 'pkg_info -X')
+
+Basic concepts:
+XXX:
    dictionary protocol server serves a number of
    databases (dictionaries). All these dictionaries are
    specially named, e.g. pkgsrc-src-index-COMMENT,
@@ -33,5 +61,9 @@ Basic concept:
       (pkgname -> info).
    Dictionary server also provides a number of
    so called search strategies, e.g. exact, prefix, suffix etc.
+
+http://www.dict.org
+http://sourceforge.net/projects/dict
+RFC-2229
 
 #################################################################
