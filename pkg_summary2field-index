@@ -85,7 +85,7 @@ END {
 }
 
 replace_8bit_symbs (){
-    awk '{gsub(/[\200-\377]/, "<bad-symbol>"); print}' "$@"
+    tr -d '\200-\377'
 }
 
 runpipe0 \
