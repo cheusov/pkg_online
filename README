@@ -1,13 +1,13 @@
 #################################################################
 
-Sample of usage:
+Installation:
 
-  Installation:
+  make all install-dirs install  
+  export PATH=$PATH:/usr/local/bin
+  export PKG_ONLINE_SERVER=gorodok.0n.ru
+  export PKG_ONLINE_PORT=2628
 
-    make install-dirs install  
-    export PATH=$PATH:/usr/local/bin
-    export PKG_ONLINE_SERVER=gorodok.0n.ru
-    export PKG_ONLINE_PORT=2628
+Sample of client usage:
 
   Running.
     # to see available search strategies
@@ -49,6 +49,15 @@ Environment variables:
    PKG_SUMMARY_TYPE (src) - "src" or "bin" for source or binary summary
       ('wip/pkg_src_summary' or 'pkg_info -X')
 
+Running the server:
+
+   export PKG_SUMMARY_TYPE=src # or bin depending on your summary type
+   pkg_summary2all summary.txt
+   mv *.index *.dict /path/to/dictd/databases/
+   pkg_online_mkconf /path/to/dictd/databases > /path/to/dictd/config.conf
+   finish configuring /path/to/dictd/config.conf
+   run dictd
+
 Basic concepts:
 XXX:
    dictionary protocol server serves a number of
@@ -61,6 +70,10 @@ XXX:
       (pkgname -> info).
    Dictionary server also provides a number of
    so called search strategies, e.g. exact, prefix, suffix etc.
+   XXX:
+
+   Look inside pkg_online_client and pkg_online_info to understand
+   how dictionary protocol/server/client are used.
 
 http://www.dict.org
 http://sourceforge.net/projects/dict
