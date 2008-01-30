@@ -1,2 +1,37 @@
-##################################################
-##################################################
+#################################################################
+
+Sample of usage:
+
+  Installation:
+
+    make install-dirs install  
+    export PATH=$PATH:/usr/local/bin
+    export PKG_ONLINE_SERVER=gorodok.0n.ru
+    export PKG_ONLINE_PORT=2628
+
+  Running.
+    # to see available search strategies
+    pkg_online_client -s
+
+    # to see available fields
+    pkg_online_client -f
+
+    # low-level search tool
+    pkg_online_client 'MAINTAINER:prefix:jlam@'
+    pkg_online_client 'PKGPATH:suffix:/dictem'
+    pkg_online_client 'PKGPATH:substring:wip/p5-'
+    pkg_online_client 'COMMENT:substring:hash table'
+
+Basic concept:
+   dictionary protocol server serves a number of
+   databases (dictionaries). All these dictionaries are
+   specially named, e.g. pkgsrc-src-index-COMMENT,
+   pkgsrc-src-index-MAINTAINER and pkgsrc-src-info.
+   pkgsrc-src-index-* are for indexing fields
+      (field -> pkgname).
+   pkgsrc-src-info keeps information about all packages
+      (pkgname -> info).
+   Dictionary server also provides a number of
+   so called search strategies, e.g. exact, prefix, suffix etc.
+
+#################################################################
