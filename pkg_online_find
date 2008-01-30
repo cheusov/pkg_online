@@ -72,6 +72,17 @@ for q in "$@"; do
 	eval strat=\$$synonym
     fi
 
+    # short names for fields
+    if test -z "$field"; then
+	field=empty
+    fi
+
+    synonym="pkg_online_field__$field"
+    if eval test "\$$synonym"; then
+	eval field=\$$synonym
+    fi
+
+    #
     res_fn=$tmp_dir/$cnt.txt
 
     $PKG_ONLINE_CLIENT "$field:$strat:$query" > $res_fn
