@@ -1,5 +1,5 @@
 # libexec
-export PATH=@libexec@:$PATH
+export PATH=/usr/local/libexec:$PATH
 
 # source and binary search fields
 fields_src='PKGPATH DEPENDS BUILD_DEPENDS CONFLICTS INDEX HOMEPAGE COMMENT LICENSE ONLYFOR NOTFOR MAINTAINER CATEGORIES PLIST DESCRIPTION'

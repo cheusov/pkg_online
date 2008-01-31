@@ -26,12 +26,6 @@ FILES=		README
 FILESDIR_README=		${DOCDIR}
 FILESMODE_pkg_online_env.sh=	${NONBINMODE}
 
-pkg_online_env.sh: pkg_online_env.sh.in
-	sed 's,@libexec@,${FILESDIR},' ${.ALLSRC} > ${.TARGET}
-
-.PHONY : all
-all : pkg_online_env.sh
-
 ##################################################
 
 .PHONY: install-dirs
