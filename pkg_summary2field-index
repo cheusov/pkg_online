@@ -123,6 +123,6 @@ runpipe0 \
 # because of this
 awk -F'\t' '
 NF != 4 && length($0) >= 1000 {
-   print "dictfmt is broken, update it from CVS or pkgsrc/wip/dictfmt" > "/dev/stderr"
+   print "dictfmt is broken, update it from CVS or pkgsrc/wip/dict-server" > "/dev/stderr"
    exit 1
 }' $dbname.index
