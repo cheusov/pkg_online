@@ -30,11 +30,15 @@ export LC_ALL=C
 
 usage () {
 cat <<EOF
-usage: pkg_online_client [OPTIONS] [field:strategy:query]
+usage: pkg_online_client field:strategy:query
+       pkg_online_client -f
+       pkg_online_client -s
+       pkg_online_client -i pkgname1 [pkgname2...]
 OPTIONS:
    -h         display this screen
    -s         display available search strategies
    -f         display available fields for search in
+   -i         display information about packages (by PKGNAME)
 EOF
 }
 
@@ -49,6 +53,8 @@ while test $# -gt 0; do
             strats=1;;
         -f)
             dbs=1;;
+        -i)
+            info=1;;
         -h)
             usage
 	    exit 0;;
@@ -121,18 +127,52 @@ run_query (){
     fi
 }
 
+decorate_info (){
+    awk -F'\t' '
+    /^[0-9]+ definition.*found$/ {next} # workaround for bug in `dict -f`
+
+    /^  / {
+	print substr($0, 3)
+	next
+    }
+
+    {
+	print "---------------------------------------------------------------------"
+    }
+    ' "$@"
+}
+
+# -s
 if test $strats; then
     runpipe0 $PKG_ONLINE_DICT \
-	-h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
+	-h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" -P - \
 	-f -S '|' extract_strat
+
+    exit 0
 fi
 
+# -f
 if test $dbs; then
     runpipe0 $PKG_ONLINE_DICT \
-	-h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
+	-h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" -P - \
 	-f -D '|' extract_fields
+
+    exit 0
 fi
 
+# -i
+if test $info; then
+    for pkgname in "$@"; do
+	runpipe0 $PKG_ONLINE_DICT \
+	    -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" -P - \
+	    -f -d pkgsrc-"$PKG_SUMMARY_TYPE"-info "$pkgname" '|' \
+	decorate_info
+    done
+
+    exit 0
+fi
+
+# search queries
 for q in "$@"; do
     run_query "$q"
 done

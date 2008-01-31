@@ -10,6 +10,7 @@ Installation:
 Sample of client usage:
 
   Running.
+
     # to see available search strategies
     pkg_online_client -s
 
@@ -17,11 +18,11 @@ Sample of client usage:
     pkg_online_client -f
 
     # information about packages (PKGNAME here, not PKGPATH!)
-    pkg_online_info xxkb
-    pkg_online_info dict-server dict-client
-    pkg_online_info pkg_src_summary
+    pkg_online_client -i xxkb
+    pkg_online_client -i dict-server dict-client
+    pkg_online_client -i dictem
 
-    # low-level search tool (full names for strategies and fields here)
+    # low-level search tool (full names for strategies and fields!)
     pkg_online_client 'MAINTAINER:prefix:jlam@'
     pkg_online_client 'PKGPATH:suffix:/dictem'
     pkg_online_client 'PKGPATH:substring:wip/p5-'
@@ -33,7 +34,7 @@ Sample of client usage:
     pkg_online_find 'c:w:vpn'
     pkg_online_find 'c:r:dns.*server'
     pkg_online_find 'c:r:dns.*server' 'p:p:net'
-    
+
     For the list of synonyms look inside pkg_online_env.sh.
     Of course it is allowed to combine full names and short synonyms.
     Synonyms are overridable by you, see pkg_online_env.sh.
@@ -72,7 +73,7 @@ XXX:
    so called search strategies, e.g. exact, prefix, suffix etc.
    XXX:
 
-   Look inside pkg_online_client and pkg_online_info to understand
+   Look inside pkg_online_client to understand
    how dictionary protocol/server/client are used.
 
 http://www.dict.org

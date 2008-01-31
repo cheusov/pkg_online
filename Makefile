@@ -18,7 +18,7 @@ MKMAN=		no
 
 SCRIPTS=	pkg_summary2pkgname_to_comment pkg_summary2info \
 		pkg_summary2field-index pkg_summary2all pkg_online_mkconf \
-		pkg_online_info pkg_online_find pkg_online_client \
+		pkg_online_find pkg_online_client \
 		pkg_online_env.sh
 
 FILES=		README
@@ -28,6 +28,9 @@ FILESMODE_pkg_online_env.sh=	${NONBINMODE}
 
 pkg_online_env.sh: pkg_online_env.sh.in
 	sed 's,@libexec@,${FILESDIR},' ${.ALLSRC} > ${.TARGET}
+
+.PHONY : all
+all : pkg_online_env.sh
 
 ##################################################
 
