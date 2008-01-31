@@ -56,12 +56,12 @@ database pkgsrc-$PKG_SUMMARY_TYPE-info {
 }
 EOF
 
-# pkg2comment database
+# pkg2onelineinfo database
 cat <<EOF
-# PKGNAME2COMMENT database
-database pkgsrc-$PKG_SUMMARY_TYPE-pkgname2comment {
-   index  "$db_dir/pkgsrc-$PKG_SUMMARY_TYPE-pkgname2comment.index"
-   data   "$db_dir/pkgsrc-$PKG_SUMMARY_TYPE-pkgname2comment.dict"
+# PKGNAME2ONELINEINFO database
+database pkgsrc-$PKG_SUMMARY_TYPE-pkgname2onelineinfo {
+   index  "$db_dir/pkgsrc-$PKG_SUMMARY_TYPE-pkgname2onelineinfo.index"
+   data   "$db_dir/pkgsrc-$PKG_SUMMARY_TYPE-pkgname2onelineinfo.dict"
 }
 EOF
 

@@ -93,16 +93,16 @@ done
 result_fn="$tmp_dir"/result
 intersect "$cnt" > "$result_fn"
 
-print_pkgname_and_comment () {
+print_pkgname_and_onelineinfo () {
     awk -v result_fn="$result_fn" -F'\t' '
     $0 ~ /^[0-9]/ && NF != 4 {
         skip = 0
         next
     }
     NF == 4 && !skip {
-        getline comment
+        getline onelineinfo
         getline pkgname < result_fn
-        printf "%20s - %s\n", pkgname, comment
+        printf "%20s - %s\n", pkgname, onelineinfo
         skip = 1
         fflush()
     }'
@@ -114,16 +114,16 @@ decorate_pkgnames1 (){
     # with select(2) or fork(2)
 
     runpipe0 dict -F -f -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
-	-d pkgsrc-${PKG_SUMMARY_TYPE}-pkgname2comment "$@" '|' \
-    print_pkgname_and_comment
+	-d pkgsrc-${PKG_SUMMARY_TYPE}-pkgname2onelineinfo "$@" '|' \
+    print_pkgname_and_onelineinfo
 }
 
 decorate_pkgnames2 (){
     # slow! See decorate_pkgnames1
     for q in "$@"; do 
 	dict -f -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
-	    -d pkgsrc-${PKG_SUMMARY_TYPE}-pkgname2comment "$q"
-    done | print_pkgname_and_comment
+	    -d pkgsrc-${PKG_SUMMARY_TYPE}-pkgname2onelineinfo "$q"
+    done | print_pkgname_and_onelineinfo
 }
 
 quick_hack_client (){
@@ -174,7 +174,7 @@ $1 == 221 {
 
 generate_rfc2229_query (){
     for db in "$@"; do
-	printf "define pkgsrc-%s-pkgname2comment %s\r\n" "${PKG_SUMMARY_TYPE}" "$db"
+	printf "define pkgsrc-%s-pkgname2onelineinfo %s\r\n" "${PKG_SUMMARY_TYPE}" "$db"
     done
     printf 'quit\r\n';
 }
@@ -184,7 +184,7 @@ decorate_pkgnames3 (){
 	generate_rfc2229_query "$@" '|' \
 	${PKG_ONLINE_NETCAT} "$PKG_ONLINE_SERVER" "$PKG_ONLINE_PORT" '|' \
 	quick_hack_client '|' \
-	print_pkgname_and_comment
+	print_pkgname_and_onelineinfo
 }
 
 if test -s "$result_fn"; then
