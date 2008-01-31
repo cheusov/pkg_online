@@ -52,7 +52,8 @@ set_if_not_set pkg_online_strat__x     soundex
 set_if_not_set pkg_online_strat__v     lev
 
 # short names (synonyms) for fields
-set_if_not_set pkg_online_field__empty PKGPATH
+set_if_not_set pkg_online_field__empty COMMENT
+set_if_not_set pkg_online_field__n     PKGNAME
 set_if_not_set pkg_online_field__p     PKGPATH
 set_if_not_set pkg_online_field__c     COMMENT
 set_if_not_set pkg_online_field__f     PLIST
