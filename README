@@ -4,10 +4,14 @@ Installation:
 
   make all install-dirs install  
   export PATH=$PATH:/usr/local/bin
-  export PKG_ONLINE_SERVER=gorodok.0n.ru
-  export PKG_ONLINE_PORT=2628
 
 Sample of client usage:
+
+  Initialization.
+
+    export PKG_ONLINE_SERVER=gorodok.0n.ru
+    export PKG_ONLINE_PORT=2628
+    export PKG_ONLINE_NETCAT=/usr/pkg/sbin/nc # path to netcat
 
   Running.
 
@@ -48,10 +52,11 @@ Environment variables:
       reimplemeneting dictionary server or anything you need.
    PKG_ONLINE_DICT (dict) - path to dictionary protocol client.
    PKG_SUMMARY_TYPE (src) - "src" or "bin" for source or binary summary
-      ('wip/pkg_src_summary' or 'pkg_info -X')
+      (output of 'wip/pkg_src_summary' or 'pkg_info -X')
+   PKG_ONLINE_NETCAT (nc) - path to netcat program
 
 Running the server:
-
+XXX:
    export PKG_SUMMARY_TYPE=src # or bin depending on your summary type
    pkg_summary2all summary.txt
    mv *.index *.dict /path/to/dictd/databases/
@@ -71,7 +76,6 @@ XXX:
       (pkgname -> info).
    Dictionary server also provides a number of
    so called search strategies, e.g. exact, prefix, suffix etc.
-   XXX:
 
    Look inside pkg_online_client to understand
    how dictionary protocol/server/client are used.
