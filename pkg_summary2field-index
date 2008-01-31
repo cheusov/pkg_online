@@ -101,7 +101,6 @@ END {
         print_description()
     }
 }
-
 ' "$@"
 }
 
@@ -109,6 +108,7 @@ replace_8bit_symbs (){
     tr -d '\200-\377'
 }
 
+dbname=pkgsrc${suff}-index-"$field"
 runpipe0 \
     cat "$@" '|' \
     replace_8bit_symbs '|' \
@@ -116,4 +116,13 @@ runpipe0 \
     dictfmt -c5 -q -s "$field index" \
        --allchars --index-data-separator '|%%|' \
        --without-header --without-headword -u 'http://www.pkgsrc.org' \
-       pkgsrc${suff}-index-"$field"
+       $dbname
+
+# test for dictfmt bug (max size of headword is limited in
+# dictfmt-1.10.10).  DESCRIPTION and other long fields may be broken
+# because of this
+awk -F'\t' '
+NF != 4 && length($0) >= 1000 {
+   print "dictfmt is broken, update it from CVS or pkgsrc/wip/dictfmt" > "/dev/stderr"
+   exit 1
+}' $dbname.index
