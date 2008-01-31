@@ -45,14 +45,23 @@ awk '
 
 /^COMMENT=/ {
     sub(/^COMMENT=/, "")
-    printf "_____\n\n%s\n%s\n", pkgname, $0
+    comment = $0
+}
+
+/^PKGPATH=/ {
+    sub(/^PKGPATH=/, "")
+    pkgpath = $0
+}
+
+NF == 0 {
+    printf "_____\n\n%s\n%10s - %s\n", pkgname, pkgpath, comment
 }
 ' "$@"
 }
 
 runpipe0 \
     summary2dict "$@" '|' \
-    dictfmt -c5 -q -s "pkgsrc packages: pkgname2comment database" \
+    dictfmt -c5 -q -s "pkgsrc packages: pkgname2onelineinfo database" \
         --allchars --index-data-separator '|%%|' \
         --without-header --without-headword -u 'http://www.pkgsrc.org' \
-        pkgsrc${suff}-pkgname2comment
+        pkgsrc${suff}-pkgname2onelineinfo --columns 0
