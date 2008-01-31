@@ -103,7 +103,11 @@ run_query (){
 	exit 2
     fi
 
-    dbname="pkgsrc-${PKG_SUMMARY_TYPE}-index-${field}"
+    if test _"$field" = _PKGNAME; then
+	dbname="pkgsrc-${PKG_SUMMARY_TYPE}-info"
+    else
+	dbname="pkgsrc-${PKG_SUMMARY_TYPE}-index-${field}"
+    fi
 
     res_fn=$tmp_dir/result.txt
     log_fn=$tmp_dir/errors.log
