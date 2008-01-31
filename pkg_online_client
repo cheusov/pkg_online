@@ -23,7 +23,7 @@
 
 set -e
 
-. pkg_online_env.sh
+. pkg_online_client.env
 . pipestatus
 
 export LC_ALL=C 

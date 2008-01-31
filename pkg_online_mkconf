@@ -23,7 +23,7 @@
 
 set -e
 
-. pkg_online_env.sh
+. pkg_online_server.env
 
 usage (){
     echo 'usage: pkg_online_mkconf <db_dir>' 1>&2

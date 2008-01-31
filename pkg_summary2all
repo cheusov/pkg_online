@@ -23,7 +23,7 @@
 
 set -e
 
-. pkg_online_env.sh
+. pkg_online_server.env
 
 eval fields="\$fields_$PKG_SUMMARY_TYPE"
 
