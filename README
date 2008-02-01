@@ -1,5 +1,51 @@
 #################################################################
 
+Requirements:
+
+  Server side (building utilities):
+
+    - pkg_src_summary (for building summary for packages from
+      pkgsrc/ tree)
+
+      packaged in pkgsrc/wip/pkg_src_summary
+
+    - pkg_summary4view
+
+      packaged in pkgsrc/wip/pkg_summary4view
+
+    - dictfmt > 1.10.10,
+
+      http://sourceforge.net/projects/dict,
+      version packaged in pkgsrc/wip/dict-server is good
+        (>= dictd-1.10.10nb2)
+
+    - pipestatus
+
+      http://sourceforge.net/projects/pipestatus
+
+    - dictd dictionary server > 1.10.10,
+
+      http://sourceforge.net/projects/dict
+
+      version packaged in pkgsrc/wip/dict-server is good
+        (>= dictd-1.10.10nb2)
+
+  Client side:
+
+    - dictionary protocol client compatible with 'dict >= 1.10.9'
+
+      http://sourceforge.net/projects/dict
+
+      version packaged in pkgsrc/wip/dict-client is good
+
+    - pipestatus
+
+      http://sourceforge.net/projects/pipestatus
+
+    - netcat
+
+      net/netcat pkgsrc package
+
 Installation:
 
   make all install-dirs install  
