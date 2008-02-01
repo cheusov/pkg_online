@@ -1,5 +1,21 @@
 #################################################################
 
+    Client/Server system for searching in pkgsrc packages.
+
+     Dictionary protocol (RFC-2229) is used for searching.
+
+ There is nothing specific to pkgsrc. It can easily be adopted
+              to any other packaging system.
+
+##########
+
+useful URLs:
+
+  http://www.dict.org
+  http://www.pkgsrc.org
+
+#################################################################
+
 Requirements:
 
   Server side (building utilities):
@@ -55,19 +71,21 @@ Sample of client usage:
 
   Initialization.
 
-    export PKG_ONLINE_SERVER=gorodok.0n.ru
-    export PKG_ONLINE_PORT=2628
-    export PKG_ONLINE_NETCAT=/usr/pkg/sbin/nc # path to netcat
+    export PKG_ONLINE_SERVER=your.server.org  # default - dictd.xdsl.by
+    export PKG_ONLINE_PORT=your.port          # default - 2628
+    # By default my server dictd.xdsl.by:26280 is used
+
+    export PKG_ONLINE_NETCAT=/usr/pkg/sbin/nc # default - nc
 
   Running.
 
-    # to see available search strategies
+    # ask server for a list of available search strategies
     pkg_online_client -s
 
-    # to see available fields
+    # ask server for a list of fields to search in
     pkg_online_client -f
 
-    # information about packages (PKGNAME here, not PKGPATH!)
+    # obtain information about packages (PKGNAME here, not PKGPATH!)
     pkg_online_client -i xxkb
     pkg_online_client -i dict-server dict-client
     pkg_online_client -i dictem
