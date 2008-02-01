@@ -36,9 +36,7 @@ awk '
 /^PKGNAME=/ {
     pkgname = $1
     sub(/^PKGNAME=/, "", pkgname)
-    if (pkgname ~ /[0-9]$/){
-	sub(/-[^-]*$/, "", pkgname)
-    }
+    sub(/-[^-]*$/, "", pkgname)
 
     next
 }

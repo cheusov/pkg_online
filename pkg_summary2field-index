@@ -57,10 +57,8 @@ $1 == "PKGNAME" {
 
     sub(/^[^=]*=/, "")
 
-    if (pkgname ~ /[0-9]$/){
-	sub(/-[^-]*$/, "", pkgname)
-    }
-
+    sub(/-[^-]*$/, "", pkgname)
+ 
     next
 }
 

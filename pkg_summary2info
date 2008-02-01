@@ -39,9 +39,7 @@ awk '
 
 /^[^ ]/ && $1 ~ /^[Pp][Kk][Gg][Nn][Aa][Mm][Ee]:$/ {
     basename = $2
-    if (basename ~ /[0-9]$/){
-	sub(/-[^-]*$/, "", basename)
-    }
+    sub(/-[^-]*$/, "", basename)
     printf "_____\n\n%s\n%s\n", basename, $0
     next
 }
