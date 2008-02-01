@@ -11,6 +11,8 @@ INST_DIR?=	${INSTALL} -d
 
 VERSION=	0.2.0
 
+TARBALL=	pkg_online
+
 BIRTHDATE=	2008-02-02
 
 MKMAN=		no
