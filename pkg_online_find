@@ -171,7 +171,7 @@ $1 == 221 {
 }
 
 {
-   print "unexpected answer from server: " $0 > "/dev/stderr"
+   print "unexpected server response: " $0 > "/dev/stderr"
    exit 10
 }
 '"$@"
