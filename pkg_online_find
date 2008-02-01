@@ -169,6 +169,11 @@ $1 == 151 {
 $1 == 221 {
    exit 0
 }
+
+{
+   print "unexpected answer from server: " $0 > "/dev/stderr"
+   exit 10
+}
 '"$@"
 }
 
