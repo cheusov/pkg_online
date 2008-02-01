@@ -9,9 +9,9 @@ INST_DIR?=	${INSTALL} -d
 
 ##################################################
 
-VERSION=	0.1.0
+VERSION=	0.2.0
 
-BIRTHDATE=	2008-01-30
+BIRTHDATE=	2008-02-02
 
 MKMAN=		no
 
@@ -39,4 +39,6 @@ install-dirs:
 .endif
 
 ##################################################
-.include "bsd.prog.mk"
+.include "Makefile.cvsdist"
+
+.include <bsd.prog.mk>
