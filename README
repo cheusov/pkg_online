@@ -103,13 +103,14 @@ Sample of client usage:
     pkg_online_find 'c:r:dns.*server'
     pkg_online_find 'c:r:dns.*server' 'p:p:net'
 
-    Here fields 'c' and '' mean COMMENT, 'm' means MAINTAINER
+    Here field 'c' means COMMENT, 'm' means MAINTAINER
     and 'p' means PKGPATH. Search strategy 'p' means 'prefix',
-    '' means 'substring', 'r' means 're' and 'w' means 'word'.
+    '' means '.' (default search strategy, may be set individually per field),
+    'r' means 're' and 'w' means 'word'.
 
-    For the list of synonyms look inside pkg_online_env.sh.
+    For the list of synonyms look inside pkg_online_client.env.
     Of course it is allowed to combine full names and short synonyms.
-    Synonyms are overridable by you, see pkg_online_env.sh.
+    Synonyms are overridable by you, see pkg_online_client.env.
 
 Environment variables:
 
