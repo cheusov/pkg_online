@@ -65,6 +65,15 @@ database pkgsrc-$PKG_SUMMARY_TYPE-pkgname2onelineinfo {
 }
 EOF
 
+# pkg2shortinfo database
+cat <<EOF
+# PKGNAME2SHORTINFO database
+database pkgsrc-$PKG_SUMMARY_TYPE-pkgname2shortinfo {
+   index  "$db_dir/pkgsrc-$PKG_SUMMARY_TYPE-pkgname2shortinfo.index"
+   data   "$db_dir/pkgsrc-$PKG_SUMMARY_TYPE-pkgname2shortinfo.dict"
+}
+EOF
+
 # indices
 cmd="echo \$fields_$PKG_SUMMARY_TYPE"
 fields=`eval $cmd`

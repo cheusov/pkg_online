@@ -24,28 +24,39 @@
 set -e
 
 . pkg_online_server.env
+. pipestatus
 
-eval fields="\$fields_$PKG_SUMMARY_TYPE"
+export LC_ALL=C
 
-# fields indices
-for i in $fields
-do
-    printf "index for field %s" $i...
-    pkg_summary2field-index $i "$@"
-    printf "done\n"
-done
+suff="-$PKG_SUMMARY_TYPE"
+msg=" $PKG_SUMMARY_TYPE"
 
-# whole information
-printf "%s" 'information about packages...'
-pkg_summary2info "$@"
-printf "done\n"
+grep_interesting_fields () {
+    egrep '^(COMMENT=|PKGNAME=|PKGPATH=|DESCRIPTION=|HOMEPAGE=|MAINTAINER=|$)' \
+	"$@"
+}
 
-# pkgname2onelineinfo
-printf 'pkgname2onelineinfo...'
-pkg_summary2pkgname_to_onelineinfo "$@"
-printf "done\n"
+summary_view2dict (){
+    awk '
+    /^-----/ {
+	next
+    }
 
-# pkgname2shortinfo
-printf 'pkgname2shortinfo...'
-pkg_summary2pkgname_to_shortinfo "$@"
-printf "done\n"
+    /^PKGNAME:/ {
+	printf "_____\n\n%s\n", $2
+	next
+    }
+
+    {
+	print
+    }'
+}
+
+runpipe0 \
+    grep_interesting_fields "$@" '|' \
+    pkg_summary4view '|' \
+    summary_view2dict '|' \
+    dictfmt -c5 -q -s "pkgsrc packages: pkgname2shortinfo database" \
+        --allchars --index-data-separator '|%%|' \
+        --without-header --without-headword -u 'http://www.pkgsrc.org' \
+        pkgsrc${suff}-pkgname2shortinfo --columns 0
