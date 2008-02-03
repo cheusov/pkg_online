@@ -101,6 +101,11 @@ extract_pkgname (){
 
 run_query (){
     # $1: dbname:strategy:query
+    if echo "$1" | grep '^[^:]*:[^:]*:[^:]*$' > /dev/null; then
+	echo "Search query must have the form 'field:strategy:query'" 1>&2
+	exit 1
+    fi
+
     field="`echo $1 | cut -d: -f1`"
     strat="`echo $1 | cut -d: -f2`"
     query="`echo $1 | cut -d: -f3`"
