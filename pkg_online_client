@@ -266,24 +266,24 @@ generate_rfc2229_query (){
     printf 'quit\r\n';
 }
 
-decorate_pkgnames1 (){
+pkgname_to_onelineinfo1 (){
     # slow! needs CVS version of 'dict' program
     # To make this fast, 'dict' should be rewritten
-    # with select(2) or fork(2)
+    # with select(2) or fork(2) or ...
     runpipe0 dict -F -f -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
 	-d pkgsrc-${PKG_SUMMARY_TYPE}-pkgname2onelineinfo "$@" '|' \
 	print_pkgname_and_onelineinfo
 }
 
-decorate_pkgnames2 (){
-    # slow! See decorate_pkgnames1
+pkgname_to_onelineinfo2 (){
+    # slow! See pkgname_to_onelineinfo1
     for q in "$@"; do 
 	dict -f -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
 	    -d pkgsrc-${PKG_SUMMARY_TYPE}-pkgname2onelineinfo "$q" || return 1
     done | print_pkgname_and_onelineinfo
 }
 
-decorate_pkgnames3 (){
+pkgname_to_onelineinfo3 (){
     # dict sucks - this is why netcat hack is used (will be fixed later)
     runpipe0 \
 	generate_rfc2229_query "$@" '|' \
@@ -297,7 +297,7 @@ if test $onelineinfo; then
     for pkg in "$@"; do
 	echo $pkg >> $pkgs_fn
     done
-    decorate_pkgnames3 "$@"
+    pkgname_to_onelineinfo3 "$@"
     exit $?
 fi
 
