@@ -43,7 +43,9 @@ summary_view2dict (){
     }
 
     /^PKGNAME:/ {
-	printf "_____\n\n%s\n", $2
+	pkgname = $2
+	sub(/-[^-]*$/, "", pkgname)
+	printf "_____\n\n%s\n", pkgname
 	next
     }
 
