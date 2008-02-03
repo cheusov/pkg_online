@@ -39,6 +39,7 @@ OPTIONS:
    -s         display available search strategies
    -f         display available fields for search in
    -i         display information about packages (by PKGNAME)
+   -1         display 1-line information about packages (by PKGNAME)
 EOF
 }
 
@@ -55,6 +56,8 @@ while test $# -gt 0; do
             dbs=1;;
         -i)
             info=1;;
+        -1)
+            onelineinfo=1;;
         -h)
             usage
 	    exit 0;;
@@ -174,6 +177,128 @@ if test $info; then
     done
 
     exit 0
+fi
+
+# -1
+print_pkgname_and_onelineinfo () {
+    awk -v pkgs_fn="$pkgs_fn" -F'\t' '
+    $0 ~ /^[0-9]/ && NF != 4 {
+        skip = 0
+        next
+    }
+
+#    dict -f for DEFINE command is not implemented yet!
+#    /^No matches/ {
+#        getline pkgname < pkgs_fn
+#        fflush()
+#        next
+#    }
+
+    NF == 4 && !skip {
+        getline onelineinfo
+        getline pkgname < pkgs_fn
+        printf "%20s - %s\n", pkgname, onelineinfo
+        skip = 1
+        fflush()
+    }'
+}
+
+quick_hack_client (){
+    awk '
+BEGIN {
+   in_def = 0
+}
+
+BEGIN {
+   hostname = "hostname"
+   port     = "port"
+}
+
+{
+   sub(/\r$/, "")
+}
+
+$1 == 150 {
+   print $2, "definitions found"
+   next
+}
+
+$1 == 220 || $1 == 250 {
+   next
+}
+
+in_def && $1 == "." {
+   in_def = 0
+   next
+}
+
+in_def == 1 {
+   print "  " $0
+   next
+}
+
+$1 == 151 {
+   in_def = 1
+   printf "%s\t%s\taaa\tbbb\n", hostname, port
+   next
+}
+
+$1 == 221 {
+   exit 0
+}
+
+$1 == 552 {
+   print "No matches found:", $0 > "/dev/stderr"
+   exit 20
+}
+
+{
+   print "unexpected server response: " $0 > "/dev/stderr"
+   exit 30
+}
+'"$@"
+}
+
+generate_rfc2229_query (){
+    for db in "$@"; do
+	printf "define pkgsrc-%s-pkgname2onelineinfo %s\r\n" "${PKG_SUMMARY_TYPE}" "$db"
+    done
+    printf 'quit\r\n';
+}
+
+decorate_pkgnames1 (){
+    # slow! needs CVS version of 'dict' program
+    # To make this fast, 'dict' should be rewritten
+    # with select(2) or fork(2)
+    runpipe0 dict -F -f -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
+	-d pkgsrc-${PKG_SUMMARY_TYPE}-pkgname2onelineinfo "$@" '|' \
+	print_pkgname_and_onelineinfo
+}
+
+decorate_pkgnames2 (){
+    # slow! See decorate_pkgnames1
+    for q in "$@"; do 
+	dict -f -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
+	    -d pkgsrc-${PKG_SUMMARY_TYPE}-pkgname2onelineinfo "$q" || return 1
+    done | print_pkgname_and_onelineinfo
+}
+
+decorate_pkgnames3 (){
+    # dict sucks - this is why netcat hack is used (will be fixed later)
+    runpipe0 \
+	generate_rfc2229_query "$@" '|' \
+	${PKG_ONLINE_NETCAT} "$PKG_ONLINE_SERVER" "$PKG_ONLINE_PORT" '|' \
+	quick_hack_client '|' \
+	print_pkgname_and_onelineinfo
+}
+
+if test $onelineinfo; then
+    pkgs_fn=$tmp_dir/pkgs
+    for pkg in "$@"; do
+	echo $pkg >> $pkgs_fn
+    done
+    decorate_pkgnames3 "$@"
+    exit $?
 fi
 
 # search queries
