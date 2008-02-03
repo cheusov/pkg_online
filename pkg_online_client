@@ -179,10 +179,11 @@ if test $dbs; then
 fi
 
 # -1|-3|-9 and -i
-enrich_dict_f_with_pkgname () {
+print_pkgname_and_onelineinfo () {
     awk -v pkgs_fn="$pkgs_fn" -F'\t' '
-    BEGIN {
-        OFS="\t"
+    $0 ~ /^[0-9]/ && NF != 4 {
+        skip = 0
+        next
     }
 
 #    dict -f for DEFINE command is not implemented yet!
@@ -193,30 +194,13 @@ enrich_dict_f_with_pkgname () {
 #    }
 
     NF == 4 {
-        getline pkgname < pkgs_fn
-	$5 = pkgname
-        fflush()
-    }
-
-    {
-        print $0
-    }
-    ' "$@"
-}
-
-print_pkgname_and_onelineinfo () {
-    awk -F'\t' '
-    $0 ~ /^[0-9]/ && NF != 5 {
-        skip = 0
-        next
-    }
-
-    NF == 5 && !skip {
         getline onelineinfo
-        printf "%20s - %s\n", $5, onelineinfo
+        getline pkgname < pkgs_fn
+        printf "%20s - %s\n", pkgname, onelineinfo
         skip = 1
         fflush()
-    }' "$@"
+    }
+    ' "$@"
 }
 
 quick_hack_client (){
@@ -310,7 +294,6 @@ pkgname_to_onelineinfo3 (){
 	generate_rfc2229_query "$@" '|' \
 	${PKG_ONLINE_NETCAT} "$PKG_ONLINE_SERVER" "$PKG_ONLINE_PORT" '|' \
 	quick_hack_client '|' \
-	enrich_dict_f_with_pkgname '|' \
 	print_pkgname_and_onelineinfo
 }
 
