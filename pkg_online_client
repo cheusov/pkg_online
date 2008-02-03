@@ -276,7 +276,7 @@ pkgname_to_onelineinfo1 (){
 }
 
 pkgname_to_onelineinfo2 (){
-    # slow! See pkgname_to_onelineinfo1
+    # slow! See pkgname_to_onelineinfo{1,3}
     for q in "$@"; do 
 	dict -f -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
 	    -d pkgsrc-${PKG_SUMMARY_TYPE}-pkgname2onelineinfo "$q" || return 1
@@ -284,7 +284,8 @@ pkgname_to_onelineinfo2 (){
 }
 
 pkgname_to_onelineinfo3 (){
-    # dict sucks - this is why netcat hack is used (will be fixed later)
+    # dict client sucks - this is why netcat hack is used here (will
+    # be fixed/rewritten later)
     runpipe0 \
 	generate_rfc2229_query "$@" '|' \
 	${PKG_ONLINE_NETCAT} "$PKG_ONLINE_SERVER" "$PKG_ONLINE_PORT" '|' \
