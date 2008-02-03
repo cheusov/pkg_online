@@ -44,7 +44,7 @@ if test $# -lt 1; then
 fi
 
 #
-mmmm (){
+grep_count (){
     # args: $1 - count
     awk '$1 == '"$1"' {print $2}'
 }
@@ -52,7 +52,8 @@ mmmm (){
 #
 intersect (){
     # args: $1 - count
-    runpipe0 sort $tmp_dir/*.txt '|' uniq -c '|' mmmm "$1" > "$result_fn"
+    runpipe0 sort $tmp_dir/*.txt '|' uniq -c '|' \
+	grep_count "$1" > "$result_fn"
 }
 
 # search images...
