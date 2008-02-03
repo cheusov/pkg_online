@@ -80,15 +80,60 @@ tmp_dir="/tmp/pkg_online_find.$$"
 trap "rm -rf $tmp_dir" 0 1 2 3 15
 mkdir -m 700 "$tmp_dir"
 
+# highligting defaults
+invert_def_loop (){
+    while read def; do
+	synonym=`echo $def | sed -e 's,^.*__,,' -e 's,=.*,,'`
+	fullname=`echo $def | sed -e 's,^[^=]*=,,' -e 's,[.],dot,'`
+	echo pkg_online_definv_$fullname=$synonym
+    done
+}
+
+invert_defaults (){
+    # $1 - field or strat
+    runpipe_re '0 [01] 0' \
+	set '|' \
+	grep ^pkg_online_$1__ '|' \
+	invert_def_loop
+}
+
 # -s
+highligh_strat_def_loop (){
+    while read strat comment; do
+	cmd="printf '%7s   %10s   %s\\n' \"\$pkg_online_definv_$strat\" \ '$strat' '$comment'"
+	eval "$cmd"
+    done
+}
+
+highligh_strat_def (){
+    eval `invert_defaults strat`
+    highligh_strat_def_loop
+}
+
 if test $strats; then
-    $PKG_ONLINE_CLIENT -s
+    echo 'synonym | full name  | description'
+    echo '--------------------------------------'
+    runpipe0 $PKG_ONLINE_CLIENT -s '|' highligh_strat_def
     exit 0
 fi
 
 # -f
+highligh_field_def_loop (){
+    while read field; do
+	cmd="printf '%7s   %s\\n' \"\$pkg_online_definv_$field\" '$field'"
+	eval "$cmd"
+    done
+}
+
+highligh_field_def (){
+    eval `invert_defaults field`
+    highligh_field_def_loop
+}
+
 if test $fields; then
-    $PKG_ONLINE_CLIENT -f
+    echo 'synonym | full name'
+    echo '--------------------------'
+    runpipe0 $PKG_ONLINE_CLIENT -f '|' highligh_field_def
     exit 0
 fi
 
