@@ -84,7 +84,7 @@ mkdir -m 700 "$tmp_dir"
 
 #
 extract_strat (){
-    awk -F'\t' '{printf "%15s - %s\n", $3, $4}'
+    awk -F'\t' '{printf "%15s    %s\n", $3, $4}'
 }
 
 extract_fields (){
