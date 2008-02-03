@@ -26,7 +26,7 @@ set -e
 . pkg_online_client.env
 . pipestatus
 
-export LC_ALL=C 
+export LC_ALL=C
 
 usage () {
 cat <<EOF
@@ -38,8 +38,9 @@ OPTIONS:
    -h         display this screen
    -s         display available search strategies
    -f         display available fields for search in
-   -i         display information about packages (by PKGNAME)
    -1         display 1-line information about packages (by PKGNAME)
+   -3         display short information about packages (by PKGNAME)
+   -i|-9      display full information about packages (by PKGNAME)
 EOF
 }
 
@@ -54,8 +55,10 @@ while test $# -gt 0; do
             strats=1;;
         -f)
             dbs=1;;
-        -i)
+        -i|-9)
             info=1;;
+        -3)
+            shortinfo=1;;
         -1)
             onelineinfo=1;;
         -h)
@@ -167,12 +170,24 @@ if test $dbs; then
     exit 0
 fi
 
-# -i
+# -i|-9
 if test $info; then
     for pkgname in "$@"; do
 	runpipe0 $PKG_ONLINE_DICT \
 	    -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" -P - \
 	    -f -d pkgsrc-"$PKG_SUMMARY_TYPE"-info "$pkgname" '|' \
+	decorate_info
+    done
+
+    exit 0
+fi
+
+# -3
+if test $shortinfo; then
+    for pkgname in "$@"; do
+	runpipe0 $PKG_ONLINE_DICT \
+	    -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" -P - \
+	    -f -d pkgsrc-"$PKG_SUMMARY_TYPE"-pkgname2shortinfo "$pkgname" '|' \
 	decorate_info
     done
 
