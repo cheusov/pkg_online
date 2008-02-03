@@ -33,7 +33,7 @@ cat <<EOF
 usage: pkg_online_client field:strategy:query
        pkg_online_client -f
        pkg_online_client -s
-       pkg_online_client -i pkgname1 [pkgname2...]
+       pkg_online_client -1|-3-9|-i pkgname1 [pkgname2...]
 OPTIONS:
    -h         display this screen
    -s         display available search strategies
@@ -122,7 +122,7 @@ run_query (){
 	$PKG_ONLINE_DICT -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
 	    -m -f -d "$dbname" -s "$strat" "$query" '|' \
 	extract_pkgname '|' sort '|' uniq > "$res_fn" 2> "$log_fn"
-   then
+    then
 	cat "$res_fn"
 	return 0
     else
