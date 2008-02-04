@@ -9,9 +9,9 @@ INST_DIR?=	${INSTALL} -d
 
 ##################################################
 
-VERSION=	0.2.0
+PROJECTNAME=	pkg_online
 
-TARBALL=	pkg_online
+VERSION=	0.2.test
 
 BIRTHDATE=	2008-02-03
 
