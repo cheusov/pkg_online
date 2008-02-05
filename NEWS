@@ -1,3 +1,43 @@
+Version 0.3.0, by Aleksey Cheusov, Tue,  5 Feb 2008 23:20:19 +0200
+
+   Server can now return so called "shortinfo", see -3 option below.
+   New database is created for this by pkgnew script
+   pkg_summary2shortinfo: pkgsrc-XXX-shortinfo.
+
+   pkg_summary2pkgname_to_onelineinfo script is renamed
+     to pkg_summary2onelineinfo
+   pkgsrc-XXX2pkgname_to_onelineinfo database is renamed
+     to pkgsrc-XXX-onelineinfo
+
+   Summary:
+      pkgsrc-XXX-info         - pkg_summary2info
+      pkgsrc-XXX-shortinfo    - pkg_summary2shortinfo
+      pkgsrc-XXX-onelineinfo  - pkg_summary2onelineinfo
+
+   - pkg_online_client
+
+     new options: -1, -3 amd -9 for obtaining
+     oneline-, short- and full information about packages.   
+     Ex: pkg_online_client -1 dict-server
+         pkg_online_client -3 netcat
+         pkg_online_client -1 bmake
+
+     new options -h for help
+
+   - pkg_online_find
+
+     new options: -1, -3 amd -9 for obtaining
+     oneline-, short- and full information about packages.   
+     Ex: pkg_online_find -1 'm:p:jlam'
+         pkg_online_find -3 'm:p:hubertf'
+         pkg_online_find -9 'm:p:tnn' 'p:p:wip/'
+
+     new options: -f -s show available field for search and search
+     strategies and their short synonyms
+
+   Makefile.cvsdist is local to this project anymore
+   (cvsdist, ChangeLog targets).
+
 ======================================================================
 Version 0.2.0, by Aleksey Cheusov, Fri,  1 Feb 2008 21:45:21 +0200
 
