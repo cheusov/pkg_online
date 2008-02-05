@@ -17,7 +17,8 @@ BIRTHDATE=	2008-02-03
 
 MKMAN=		no
 
-SCRIPTS=	pkg_summary2pkgname_to_onelineinfo pkg_summary2info \
+SCRIPTS=	pkg_summary2onelineinfo \
+		pkg_summary2shortinfo pkg_summary2info \
 		pkg_summary2field-index pkg_summary2all pkg_online_mkconf \
 		pkg_online_find pkg_online_client
 
