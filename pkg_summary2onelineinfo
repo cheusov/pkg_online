@@ -60,7 +60,7 @@ NF == 0 {
 
 runpipe0 \
     summary2dict "$@" '|' \
-    dictfmt -c5 -q -s "pkgsrc packages: pkgname2onelineinfo database" \
+    dictfmt -c5 -q -s "pkgsrc packages: onelineinfo database" \
         --allchars --index-data-separator '|%%|' \
         --without-header --without-headword -u 'http://www.pkgsrc.org' \
-        pkgsrc${suff}-pkgname2onelineinfo --columns 0
+        pkgsrc${suff}-onelineinfo --columns 0

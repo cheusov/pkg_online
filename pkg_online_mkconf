@@ -49,28 +49,28 @@ EOF
 
 # whole information about all packages
 cat <<EOF
-# MAIN database
+# INFO database
 database pkgsrc-$PKG_SUMMARY_TYPE-info {
    index  "$db_dir/pkgsrc-$PKG_SUMMARY_TYPE-info.index"
    data   "$db_dir/pkgsrc-$PKG_SUMMARY_TYPE-info.dict"
 }
 EOF
 
-# pkg2onelineinfo database
+# onelineinfo database
 cat <<EOF
-# PKGNAME2ONELINEINFO database
-database pkgsrc-$PKG_SUMMARY_TYPE-pkgname2onelineinfo {
-   index  "$db_dir/pkgsrc-$PKG_SUMMARY_TYPE-pkgname2onelineinfo.index"
-   data   "$db_dir/pkgsrc-$PKG_SUMMARY_TYPE-pkgname2onelineinfo.dict"
+# ONELINEINFO database
+database pkgsrc-$PKG_SUMMARY_TYPE-onelineinfo {
+   index  "$db_dir/pkgsrc-$PKG_SUMMARY_TYPE-onelineinfo.index"
+   data   "$db_dir/pkgsrc-$PKG_SUMMARY_TYPE-onelineinfo.dict"
 }
 EOF
 
-# pkg2shortinfo database
+# shortinfo database
 cat <<EOF
-# PKGNAME2SHORTINFO database
-database pkgsrc-$PKG_SUMMARY_TYPE-pkgname2shortinfo {
-   index  "$db_dir/pkgsrc-$PKG_SUMMARY_TYPE-pkgname2shortinfo.index"
-   data   "$db_dir/pkgsrc-$PKG_SUMMARY_TYPE-pkgname2shortinfo.dict"
+# SHORTINFO database
+database pkgsrc-$PKG_SUMMARY_TYPE-shortinfo {
+   index  "$db_dir/pkgsrc-$PKG_SUMMARY_TYPE-shortinfo.index"
+   data   "$db_dir/pkgsrc-$PKG_SUMMARY_TYPE-shortinfo.dict"
 }
 EOF
 

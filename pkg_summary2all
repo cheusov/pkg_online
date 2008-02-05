@@ -40,12 +40,12 @@ printf "%s" 'information about packages...'
 pkg_summary2info "$@"
 printf "done\n"
 
-# pkgname2onelineinfo
-printf 'pkgname2onelineinfo...'
-pkg_summary2pkgname_to_onelineinfo "$@"
+# onelineinfo
+printf 'onelineinfo...'
+pkg_summary2onelineinfo "$@"
 printf "done\n"
 
-# pkgname2shortinfo
-printf 'pkgname2shortinfo...'
-pkg_summary2pkgname_to_shortinfo "$@"
+# shortinfo
+printf 'shortinfo...'
+pkg_summary2shortinfo "$@"
 printf "done\n"
