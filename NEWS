@@ -1,3 +1,5 @@
+======================================================================
+
 Version 0.3.0, by Aleksey Cheusov, Tue,  5 Feb 2008 23:20:19 +0200
 
    Server can now return so called "shortinfo", see -3 option below.
