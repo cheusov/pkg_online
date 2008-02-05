@@ -178,7 +178,7 @@ if test $dbs; then
     exit 0
 fi
 
-# -1|-3|-9 and -i
+# -1
 print_pkgname_and_onelineinfo () {
     awk -v pkgs_fn="$pkgs_fn" -F'\t' '
     $0 ~ /^[0-9]/ && NF != 4 {
@@ -203,6 +203,9 @@ print_pkgname_and_onelineinfo () {
     ' "$@"
 }
 
+# hack dict client that DEFINEs quickly multiple queries
+
+# server response parser
 quick_hack_client (){
     awk '
 BEGIN {
@@ -259,6 +262,7 @@ $1 == 552 {
 '"$@"
 }
 
+# query generator
 generate_rfc2229_query (){
     # $1 - dbname
     dbname=$1
@@ -270,72 +274,41 @@ generate_rfc2229_query (){
     printf 'quit\r\n';
 }
 
-pkgname_to_onelineinfo1 (){
-    # slow! needs CVS version of 'dict' program
-    # To make this fast, 'dict' should be rewritten
-    # with select(2) or fork(2) or ...
-    runpipe0 dict -F -f -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
-	-d pkgsrc-${PKG_SUMMARY_TYPE}-pkgname2onelineinfo "$@" '|' \
-	print_pkgname_and_onelineinfo
-}
-
-pkgname_to_onelineinfo2 (){
-    # slow! See pkgname_to_onelineinfo{1,3}
-    for q in "$@"; do 
-	dict -f -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
-	    -d pkgsrc-${PKG_SUMMARY_TYPE}-pkgname2onelineinfo "$q" || return 1
-    done | print_pkgname_and_onelineinfo
-}
-
-pkgname_to_onelineinfo3 (){
-    # dict client sucks - this is why netcat hack is used here (will
-    # be fixed/rewritten later)
-    runpipe0 \
-	generate_rfc2229_query "$@" '|' \
-	${PKG_ONLINE_NETCAT} "$PKG_ONLINE_SERVER" "$PKG_ONLINE_PORT" '|' \
-	quick_hack_client '|' \
-	print_pkgname_and_onelineinfo
-}
-
 # -i and -9
 if test $info; then
-    if test 'dict_client_sucks'; then
-	runpipe0 \
-	    generate_rfc2229_query pkgsrc-${PKG_SUMMARY_TYPE}-info "$@" '|' \
-	    ${PKG_ONLINE_NETCAT} "$PKG_ONLINE_SERVER" "$PKG_ONLINE_PORT" '|' \
-	    quick_hack_client '|' \
-	    decorate_info
-    else
-	for pkgname in "$@"; do
-	    runpipe0 $PKG_ONLINE_DICT \
-		-h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" -P - \
-		-f -d pkgsrc-"$PKG_SUMMARY_TYPE"-info \
-		    "$pkgname" '|' \
-		decorate_info
-	done
-    fi
+    runpipe0 \
+	generate_rfc2229_query pkgsrc-${PKG_SUMMARY_TYPE}-info "$@" '|' \
+	${PKG_ONLINE_NETCAT} "$PKG_ONLINE_SERVER" "$PKG_ONLINE_PORT" '|' \
+	quick_hack_client '|' \
+	decorate_info
+
+#    for future versions of 'dict' client
+#
+#    runpipe0 $PKG_ONLINE_DICT \
+#	-h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" -P - \
+#	-f -d pkgsrc-"$PKG_SUMMARY_TYPE"-info \
+#	"$@" '|' \
+#	decorate_info
 
     exit 0
 fi
 
 # -3
 if test $shortinfo; then
-    if test 'dict_client_sucks'; then
-	runpipe0 \
-	    generate_rfc2229_query \
-	        pkgsrc-${PKG_SUMMARY_TYPE}-pkgname2shortinfo "$@" '|' \
-	    ${PKG_ONLINE_NETCAT} "$PKG_ONLINE_SERVER" "$PKG_ONLINE_PORT" '|' \
-	        quick_hack_client '|' \
-	    decorate_info
-    else
-	for pkgname in "$@"; do
-	    runpipe0 $PKG_ONLINE_DICT \
-		-h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" -P - \
-		-f -d pkgsrc-"$PKG_SUMMARY_TYPE"-pkgname2shortinfo \
-		    "$pkgname" '|' \
-		decorate_info
-	done
-    fi
+    runpipe0 \
+	generate_rfc2229_query \
+	pkgsrc-${PKG_SUMMARY_TYPE}-pkgname2shortinfo "$@" '|' \
+	${PKG_ONLINE_NETCAT} "$PKG_ONLINE_SERVER" "$PKG_ONLINE_PORT" '|' \
+	quick_hack_client '|' \
+	decorate_info
+
+#    for future versions of 'dict' client
+#
+#    runpipe0 $PKG_ONLINE_DICT \
+#	-h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" -P - \
+#	-f -d pkgsrc-"$PKG_SUMMARY_TYPE"-pkgname2shortinfo \
+#	"$@" '|' \
+#	decorate_info
 
     exit 0
 fi
@@ -346,7 +319,22 @@ if test $onelineinfo; then
     for pkg in "$@"; do
 	echo $pkg >> $pkgs_fn
     done
-    pkgname_to_onelineinfo3 pkgsrc-"$PKG_SUMMARY_TYPE"-pkgname2onelineinfo "$@"
+
+    runpipe0 \
+	generate_rfc2229_query \
+	pkgsrc-"$PKG_SUMMARY_TYPE"-pkgname2onelineinfo "$@" '|' \
+	${PKG_ONLINE_NETCAT} "$PKG_ONLINE_SERVER" "$PKG_ONLINE_PORT" '|' \
+	quick_hack_client '|' \
+	print_pkgname_and_onelineinfo
+
+#    for future versions of 'dict' client
+#
+#    runpipe0 $PKG_ONLINE_DICT -F \
+#	-h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" -P - \
+#	-f -d pkgsrc-"$PKG_SUMMARY_TYPE"-pkgname2shortinfo \
+#	"$@" '|' \
+#	print_pkgname_and_onelineinfo
+
     exit 0
 fi
 
