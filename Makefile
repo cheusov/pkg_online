@@ -11,7 +11,7 @@ INST_DIR?=	${INSTALL} -d
 
 PROJECTNAME=	pkg_online
 
-VERSION=	0.2.test
+VERSION=	0.3.0
 
 BIRTHDATE=	2008-02-03
 
