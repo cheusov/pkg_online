@@ -9,9 +9,9 @@ INST_DIR?=	${INSTALL} -d
 
 ##################################################
 
-PROJECTNAME=	pkg_online
+.include "Makefile.version"
 
-VERSION=	0.3.0
+PROJECTNAME=	pkg_online
 
 BIRTHDATE=	2008-02-03
 

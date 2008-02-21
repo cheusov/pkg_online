@@ -1,5 +1,12 @@
 ======================================================================
 
+Version 0.3.1, by Aleksey Cheusov, Fri, 22 Feb 2008 00:56:09 +0200
+
+  FIXED: -1 option may work incorrectly if multiple packages are found
+  for single query
+
+======================================================================
+
 Version 0.3.0, by Aleksey Cheusov, Tue,  5 Feb 2008 23:20:19 +0200
 
    Server can now return so called "shortinfo", see -3 option below.
