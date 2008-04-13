@@ -32,7 +32,7 @@ suff="-$PKG_SUMMARY_TYPE"
 msg=" $PKG_SUMMARY_TYPE"
 
 grep_interesting_fields () {
-    egrep '^(COMMENT=|PKGNAME=|PKGPATH=|DESCRIPTION=|HOMEPAGE=|MAINTAINER=|$)' \
+    grep -E '^(COMMENT=|PKGNAME=|PKGPATH=|DESCRIPTION=|HOMEPAGE=|MAINTAINER=|$)' \
 	"$@"
 }
 
@@ -42,15 +42,21 @@ summary_view2dict (){
 	next
     }
 
-    /^PKGNAME:/ {
-	pkgname = $2
-	sub(/-[^-]*$/, "", pkgname)
-	printf "_____\n\n%s\n", pkgname
+    $0 == "" && accu != "" {
+	printf "_____\n\n%s\n", pkgbase
+	print accu
+	accu = ""
 	next
     }
 
+    /^PKGNAME: / {
+	pkgbase = $2
+	sub(/-[^-]*$/, "", pkgbase)
+    }
+
     {
-	print
+	if (accu != "") accu = accu "\n"
+	accu = accu $0
     }'
 }
 
