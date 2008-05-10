@@ -39,10 +39,6 @@ grep_interesting_fields () {
 summary_view2dict (){
     awk '
     /^-----/ {
-	next
-    }
-
-    $0 == "" && accu != "" {
 	printf "_____\n\n%s\n", pkgbase
 	print accu
 	accu = ""
