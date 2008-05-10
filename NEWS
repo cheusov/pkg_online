@@ -1,5 +1,19 @@
 ======================================================================
 
+Version 0.3.3, by Aleksey Cheusov, Sun, 11 May 2008 01:47:30 +0300
+
+  FIX: pkg_summary2field-index works incorrectly if PKGNAME is not
+  before other fields. Now pkg_summary2field-index doesn't depend
+  on fields order.
+
+  "INDEX" is not search field. Indices are not built for it and
+  it is not included to SHORTINFO and FULLINFO
+
+  More fields are added to SHORTINFO:
+    DEPENDS, CONFLICTS, CATEGORIES, SIZE_PKG
+
+======================================================================
+
 Version 0.3.2, by Aleksey Cheusov, Sun, 13 Apr 2008 13:55:03 +0300
 
   PKGNAME is included to short summary
