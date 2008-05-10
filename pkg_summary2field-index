@@ -40,64 +40,57 @@ field=$1
 shift
 
 summary2dict (){
-awk -v field="$field" -F= '
-function print_description (){
-    printf "_____\n\n%s\n", substr(descr, 2) "|%%|" pkgname
-    descr = ""
-    last  = ""
-}
-
-$1 != last && last == "DESCRIPTION" {
-    print_description()
-}
-
-$1 == "PKGNAME" {
-    last    = $1
-    pkgname = $2
-
-    sub(/^[^=]*=/, "")
-
-    sub(/-[^-]*$/, "", pkgname)
- 
+awk -v field_name="$field" -F= '
+NF == 1 {
     next
 }
 
-field ~ /^(ONLY|NOT)FOR$/ && $1 == field && NF > 1 {
-    last = $1
+# PKGNAME
+$1 == "PKGNAME" {
+    pkgname = $2
+    sub(/-[^-]*$/, "", pkgname)
 
+    next
+}
+
+# ONLY|NOT-FOR
+$1 == field_name && field_name ~ /^(ONLY|NOT)FOR$/ {
     if ($2 == "any"){
 	next
     }
-
-    sub(/^[^=]*=/, "")
-
-    printf "_____\n\n%s\n", $0 "|%%|" pkgname
-    next
 }
 
-field == "DESCRIPTION" && $1 == field {
-    last = $1
-
+# PLIST
+$1 == field_name && field_name == "PLIST" {
     sub(/^[^=]*=/, "")
 
-    descr = descr " " $0
+    plist [plist_count++] = $0
 
     next
 }
 
-$1 == field && NF > 1 {
-    last = $1
-
+# <FIELD!>
+$1 == field_name {
     sub(/^[^=]*=/, "")
 
-    printf "_____\n\n%s\n", $0 "|%%|" pkgname
+    field = field " " $0
+
     next
 }
 
-END {
-    if (last == "DESCRIPTION") {
-        print_description()
+# printing
+NF == 0 {
+    if (pkgname != ""){
+        if (field != ""){
+            printf "_____\n\n%s\n", substr(field, 2) "|%%|" pkgname
+        }
+        for (i=0; i < plist_count; ++i){
+            printf "_____\n\n%s\n", plist [i] "|%%|" pkgname
+        }
     }
+    field       = ""
+    pkgname     = ""
+    plist_count = 0
 }
 ' "$@"
 }
