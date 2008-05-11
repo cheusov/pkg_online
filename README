@@ -78,39 +78,89 @@ Sample of client usage:
     export PKG_ONLINE_NETCAT=/usr/pkg/sbin/nc # default - nc
 
   Running.
+    # pkg_online client consists of two tools:
+    #   low-level tool 'pkg_online_client'
+    #   and higher-level 'pkg_online_find'
+
+    # ask programs for their options and abilities
+    pkg_online_client -h
+    pkg_online_find -h
 
     # ask server for a list of available search strategies
     pkg_online_client -s
+    pkg_online_find -s
 
     # ask server for a list of fields to search in
     pkg_online_client -f
+    pkg_online_find -f
 
     # obtain information about packages (PKGNAME here, not PKGPATH!)
-    pkg_online_client -i xxkb
-    pkg_online_client -i dict-server dict-client
-    pkg_online_client -i dictem
+    pkg_online_client -1 xxkb
+    pkg_online_client -3 dict-server dict-client
+    pkg_online_client -9 dictem
+
+    # obtain information about packages (Either PKGNAME or PKGPATH)
+(***)
+    pkg_online_find -1 x11/xxkb
+    pkg_online_find -3 dict-client
+    pkg_online_find -9 wip/distbb
 
     # low-level search tool (full names for strategies and fields!)
+    # pkg_online_client displays PKGNAMEs as a result
     pkg_online_client 'MAINTAINER:prefix:jlam@'
     pkg_online_client 'PKGPATH:suffix:/dictem'
-    pkg_online_client 'PKGPATH:substring:wip/p5-'
+    pkg_online_client 'PKGPATH:prefix:wip/p5-'
     pkg_online_client 'COMMENT:re:hash.*table'
 
-    # multiple queries together and short names for strats and fields
-    pkg_online_find '::dict'
-    pkg_online_find '::dict' 'm:p:cheusov'
-    pkg_online_find 'c:w:vpn'
-    pkg_online_find 'c:r:dns.*server'
-    pkg_online_find 'c:r:dns.*server' 'p:p:net'
+    # multiple queries together (logical <AND>) and short names for
+    # strats and fields
+    pkg_online_find -1 '::dict'
+    pkg_online_find    'n:s:dict' 'm:p:cheusov'
+    pkg_online_find -9 'c:w:vpn'
+    pkg_online_find    'c:r:dns.*server'
+    pkg_online_find -3 'c:r:dns.*server' 'p:p:net'
 
     Here field 'c' means COMMENT, 'm' means MAINTAINER
     and 'p' means PKGPATH. Search strategy 'p' means 'prefix',
-    '' means '.' (default search strategy, may be set individually per field),
-    'r' means 're' and 'w' means 'word'.
+    '' means '.' (default search strategy, may be set individually per field
+    on the server side),
+    'r' means 're' (ERE regular expression) and 'w' means 'word'.
+    Do forget that list of fields and search strategies with their short
+    synonyms are shown by 'pkg_online_find -s' and 'pkg_online_find -f'
 
     For the list of synonyms look inside pkg_online_client.env.
     Of course it is allowed to combine full names and short synonyms.
-    Synonyms are overridable by you, see pkg_online_client.env.
+    Synonyms are overridable, for this you can set a number of
+    environment variables, see pkg_online_client.env
+
+    As of pkg_online version 0.4.0 pkg_online_find and
+    pkg_online_client utilities allow queries not only in
+    field:strategy:query format. Now it also allows plain text query.
+    In this case a number of tries will be made to guess what you
+    actually want (kind of AI :-) ). For each FIELD:STRATEGY pair in
+    environment variable PKG_ONLINE_FALLBACK_RULES search is run until
+    something is found.  By default PKG_ONLINE_FALLBACK_RULES contains the
+    following search rules:
+
+         PKGNAME:exact
+         PKGPATH:exact
+         PKGNAME:substring
+         COMMENT:word
+         COMMENT:substring
+         DESCRIPTION:word
+         DESCRIPTION:substring
+
+    As you can see first two items are PKGNAME:exact and PKGPATH:exact.
+    This is why example (***) above works.
+    Samples of usage:
+
+      pkg_online_find -1 dictem
+      pkg_online_find -3 dict
+      pkg_online_find -1 dictionary
+      pkg_online_find    presentation
+
+   You can override PKG_ONLINE_FALLBACK_RULES in your .profile.  Also
+   note that the default value of this variable may change in the future.
 
 Environment variables:
 
