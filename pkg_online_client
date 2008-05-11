@@ -139,7 +139,7 @@ run_query__fsq (){
 
 run_query__AI (){
     # $1: query
-    for rule in $PKG_ONLINE_AI_RULES; do
+    for rule in $PKG_ONLINE_FALLBACK_RULES; do
 	set +e
 	pkg_online_client "$rule:$1" > "$res_fn" 2> "$log_fn"
 	ret=$?
