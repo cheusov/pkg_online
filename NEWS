@@ -1,6 +1,6 @@
 ======================================================================
 
-Version 0.3.3, by Aleksey Cheusov, Sun, 11 May 2008 01:47:30 +0300
+Version 0.3.3, by Aleksey Cheusov, Sun, 11 May 2008 11:51:53 +0300
 
   FIX: pkg_summary2field-index works incorrectly if PKGNAME is not
   before other fields. Now pkg_summary2field-index doesn't depend
@@ -10,7 +10,7 @@ Version 0.3.3, by Aleksey Cheusov, Sun, 11 May 2008 01:47:30 +0300
   it is not included to SHORTINFO and FULLINFO
 
   More fields are added to SHORTINFO:
-    DEPENDS, CONFLICTS, CATEGORIES, SIZE_PKG
+    CATEGORIES, SIZE_PKG
 
 ======================================================================
 
