@@ -1,5 +1,36 @@
 ======================================================================
 
+Version 0.4.0, by Aleksey Cheusov, Sun, 11 May 2008 18:04:38 +0300
+
+    As of pkg_online version 0.4.0 pkg_online_find and
+    pkg_online_client utilities allow queries not only in
+    field:strategy:query format. Now they also allow plain text query.
+    In this case a number of tries will be made to guess what you
+    actually want (kind of AI :-) ). For each FIELD:STRATEGY pair in
+    environment variable PKG_ONLINE_FALLBACK_RULES search is run until
+    something is found.  By default PKG_ONLINE_FALLBACK_RULES contains the
+    following search rules:
+
+         PKGNAME:exact
+         PKGPATH:exact
+         PKGNAME:substring
+         COMMENT:word
+         COMMENT:substring
+         DESCRIPTION:word
+         DESCRIPTION:substring
+
+    Samples of usage:
+
+      pkg_online_find -1 dictem
+      pkg_online_find -3 dict
+      pkg_online_find -1 dictionary
+      pkg_online_find    presentation
+
+   You can override PKG_ONLINE_FALLBACK_RULES in your .profile.  Also
+   note that the default value of this variable may change in the future.
+
+======================================================================
+
 Version 0.3.3, by Aleksey Cheusov, Sun, 11 May 2008 11:51:53 +0300
 
   FIX: pkg_summary2field-index works incorrectly if PKGNAME is not
