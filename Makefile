@@ -24,7 +24,7 @@ SCRIPTS=	pkg_summary2onelineinfo \
 
 FILES=		README NEWS TODO pkg_online_client.env pkg_online_server.env
 
-FILESDIR_README=			${DOCDIR}
+FILESDIR=				${DOCDIR}
 FILESDIR_pkg_online_client.env=		${BINDIR}
 FILESDIR_pkg_online_server.env=		${BINDIR}
 
