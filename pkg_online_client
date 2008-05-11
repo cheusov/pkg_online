@@ -82,6 +82,9 @@ tmp_dir="/tmp/pkg_online_client.$$"
 trap "rm -rf $tmp_dir" 0 1 2 3 15
 mkdir -m 700 "$tmp_dir"
 
+res_fn=$tmp_dir/result.txt
+log_fn=$tmp_dir/errors.log
+
 #
 extract_strat (){
     awk -F'\t' '{printf "%15s    %s\n", $3, $4}'
@@ -99,15 +102,7 @@ extract_pkgname (){
     awk -F'\t' 'NF == 4 {print $4}'
 }
 
-run_query (){
-    # $1: dbname:strategy:query
-    if echo "$1" | grep '^[^:]*:[^:]*:[^:]*$' > /dev/null; then
-	true
-    else
-	echo "Search query must have the form 'field:strategy:query'" 1>&2
-	exit 1
-    fi
-
+run_query__fsq (){
     field="`echo $1 | cut -d: -f1`"
     strat="`echo $1 | cut -d: -f2`"
     query="`echo $1 | cut -d: -f3`"
@@ -122,9 +117,6 @@ run_query (){
     else
 	dbname="pkgsrc-${PKG_SUMMARY_TYPE}-index-${field}"
     fi
-
-    res_fn=$tmp_dir/result.txt
-    log_fn=$tmp_dir/errors.log
 
     if runpipe0 \
 	$PKG_ONLINE_DICT -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
@@ -142,6 +134,39 @@ run_query (){
 		cat "$log_fn" 1>&2
 		return $pipestatus_1;;
 	esac
+    fi
+}
+
+run_query__AI (){
+    # $1: query
+    for rule in $PKG_ONLINE_AI_RULES; do
+	set +e
+	pkg_online_client "$rule:$1" > "$res_fn" 2> "$log_fn"
+	ret=$?
+	set -e
+
+	case $ret in
+	    20)
+		;;
+	    22|23|30|31|32|33|34|35|36|37|38|39|40|41)
+		cat "$log_fn" 1>&2
+		return 20;;
+	    0|21)
+		cat "$res_fn"
+		return 0;;
+	esac
+    done
+
+    echo "No matches found for $1" 1>&2
+    return 20
+}
+
+run_query (){
+    # $1: dbname:strategy:query
+    if echo "$1" | grep '^[^:]*:[^:]*:[^:]*$' > /dev/null; then
+	run_query__fsq "$@"
+    else
+	run_query__AI "$@"
     fi
 }
 

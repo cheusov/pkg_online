@@ -158,11 +158,10 @@ intersect (){
 }
 
 # search images...
-cnt=0
-for q in "$@"; do
-    field=`echo $q | cut -d: -f1`
-    strat=`echo $q | cut -d: -f2`
-    query=`echo $q | cut -d: -f3`
+pkg_online_client__fsq (){
+    field=`echo $1 | cut -d: -f1`
+    strat=`echo $1 | cut -d: -f2`
+    query=`echo $1 | cut -d: -f3`
 
     # short names for strategies
     if test -z "$strat"; then
@@ -185,9 +184,17 @@ for q in "$@"; do
     fi
 
     #
-    res_fn=$tmp_dir/$cnt.txt
+    $PKG_ONLINE_CLIENT "$field:$strat:$query"
+}
 
-    $PKG_ONLINE_CLIENT "$field:$strat:$query" > $res_fn
+cnt=0
+for q in "$@"; do
+    res_fn=$tmp_dir/$cnt.txt
+    if echo "$q" | grep '^[^:]*:[^:]*:[^:]*$' > /dev/null; then
+	pkg_online_client__fsq "$q" > $res_fn
+    else
+	pkg_online_client "$q" > $res_fn
+    fi
 
     cnt=$(($cnt+1))
 done
