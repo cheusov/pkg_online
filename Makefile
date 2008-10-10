@@ -18,7 +18,7 @@ BIRTHDATE=	2008-02-03
 MKMAN=		no
 
 SCRIPTS_CLIENT=	pkg_online_find pkg_online_client
-SCRIPTS_SERVER=	pkg_summary2onelineinfo \
+SCRIPTS_SERVER=	pkg_summary2dict pkg_summary2onelineinfo \
 		pkg_summary2shortinfo pkg_summary2info \
 		pkg_summary2field-index pkg_summary2all pkg_online_mkconf
 SCRIPTS?=	${SCRIPTS_CLIENT} ${SCRIPTS_SERVER}
