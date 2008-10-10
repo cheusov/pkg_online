@@ -33,7 +33,7 @@ cat <<EOF
 usage: pkg_online_find -h
        pkg_online_find -f
        pkg_online_find -s
-       pkg_online_find [-1|-3-9|-i] query1 [query2 ...]
+       pkg_online_find [-1|-3-9|-i] [-r] query1 [query2 ...]
    where 'queryX' is either plain text query or in 'f:s:q' format,
    'f' here means field name, 's' - search strategy and
    'q' means plain text query
@@ -45,10 +45,9 @@ OPTIONS:
    -3         display short information about packages
    -i|-9      display full information about packages
               (please, do not DOS dict server ;-) )
+   -r         raw output in pkg_summary(5) format
 EOF
 }
-
-info_type=-1 # the default is one-line information
 
 while test $# -gt 0; do
     case "$1" in
@@ -57,11 +56,13 @@ while test $# -gt 0; do
         -f)
             fields=1;;
         -i|-9)
-            info_type=-9;;
+            info_type="$info_type -9";;
         -3)
-            info_type=-3;;
+            info_type="$info_type -3";;
         -1)
-            info_type=-1;;
+            info_type="$info_type -1";;
+        -r)
+            info_type="$info_type -r";;
         -h)
             usage
 	    exit 0;;
@@ -76,6 +77,8 @@ while test $# -gt 0; do
     esac
     shift
 done
+
+info_type=${info_type:--1} # the default is one-line information
 
 # temp dir
 tmp_dir="/tmp/pkg_online_find.$$"
