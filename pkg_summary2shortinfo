@@ -36,30 +36,9 @@ grep_interesting_fields () {
 	"$@"
 }
 
-summary_view2dict (){
-    awk '
-    /^-----/ {
-	printf "_____\n\n%s\n", pkgbase
-	print accu
-	accu = ""
-	next
-    }
-
-    /^PKGNAME: / {
-	pkgbase = $2
-	sub(/-[^-]*$/, "", pkgbase)
-    }
-
-    {
-	if (accu != "") accu = accu "\n"
-	accu = accu $0
-    }'
-}
-
 runpipe0 \
     grep_interesting_fields "$@" '|' \
-    pkg_summary4view '|' \
-    summary_view2dict '|' \
+    pkg_summary2dict '|' \
     dictfmt -c5 -q -s "pkgsrc packages: shortinfo database" \
         --allchars --index-data-separator '|%%|' \
         --without-header --without-headword -u 'http://www.pkgsrc.org' \
