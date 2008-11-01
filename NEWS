@@ -1,5 +1,14 @@
 ======================================================================
 
+Version 0.6.0, by Aleksey Cheusov, Sat,  1 Nov 2008 13:30:40 +0200
+
+  ADDED: -q option to pkg_online_client and pkg_online_server tools
+  If applied, "no matches found" message is not printed to stderr.
+
+  .sinclude removed from Makefile
+
+======================================================================
+
 Version 0.5.0, by Aleksey Cheusov, Fri, 10 Oct 2008 23:10:33 +0300
 
   INFO and SHORT-INFO databases contain pkg_summary(5)-formatted

@@ -43,6 +43,7 @@ OPTIONS:
    -3         display short information about packages (by PKGNAME)
    -9|-i      display full information about packages (by PKGNAME)
    -r         raw output in pkg_summary(5) format
+   -q         quiet mode, do not print "No matches found" to stderr
 EOF
 }
 
@@ -65,6 +66,8 @@ while test $# -gt 0; do
             onelineinfo=1;;
         -r)
             raw_format=1;;
+        -q)
+            quiet_mode=1;;
         -h)
             usage
 	    exit 0;;
@@ -105,6 +108,12 @@ extract_pkgname (){
     awk -F'\t' 'NF == 4 {print $4}'
 }
 
+no_matches_msg (){
+    if test -z "$quiet_mode"; then
+	printf '%s\n' "$@" 1>&2
+    fi
+}
+
 run_query__fsq (){
     field="`echo $1 | cut -d: -f1`"
     strat="`echo $1 | cut -d: -f2`"
@@ -131,7 +140,7 @@ run_query__fsq (){
     else
 	case "$pipestatus_1" in
 	    20)
-		echo "No matches found for field:$field strategy:$strat query:$query" 1>&2
+		no_matches_msg "No matches found for field:$field strategy:$strat query:$query"
 		return 20;;
 	    *)
 		cat "$log_fn" 1>&2
@@ -160,7 +169,7 @@ run_query__AI (){
 	esac
     done
 
-    echo "No matches found for $1" 1>&2
+    no_matches_msg "No matches found for $1"
     return 20
 }
 
@@ -227,7 +236,7 @@ print_pkgname_and_onelineinfo () {
 
 # server response parser
 quick_hack_client (){
-    awk '
+    awk -v quiet_mode="$quiet_mode" '
 BEGIN {
    in_def = 0
 }
@@ -271,7 +280,9 @@ $1 == 221 {
 }
 
 $1 == 552 {
-   print "No matches found:", $0 > "/dev/stderr"
+   if (!quiet_mode)
+      print "No matches found:", $0 > "/dev/stderr"
+
    exit 20
 }
 

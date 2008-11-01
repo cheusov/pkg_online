@@ -51,6 +51,5 @@ install-dirs:
 .endif
 
 ##################################################
-.sinclude "Makefile.cvsdist"
 
 .include <bsd.prog.mk>
