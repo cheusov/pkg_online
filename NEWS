@@ -2,8 +2,11 @@
 
 Version 0.6.0, by Aleksey Cheusov, Sat,  1 Nov 2008 13:30:40 +0200
 
-  ADDED: -q option to pkg_online_client and pkg_online_server tools
+  ADDED: -q option to pkg_online_client and pkg_online_find tools.
   If applied, "no matches found" message is not printed to stderr.
+
+  An exit status of pkg_online_client is 20 if no matches were found.
+  Command line dictionary client works the same way.
 
   .sinclude removed from Makefile
 
