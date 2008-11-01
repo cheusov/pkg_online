@@ -305,30 +305,17 @@ generate_rfc2229_query (){
     printf 'quit\r\n';
 }
 
-# -i and -9
+# -i|-9 or -3
+dbname=''
 if test $info; then
-    runpipe0 \
-	generate_rfc2229_query pkgsrc-${PKG_SUMMARY_TYPE}-info "$@" '|' \
-	${PKG_ONLINE_NETCAT} "$PKG_ONLINE_SERVER" "$PKG_ONLINE_PORT" '|' \
-	quick_hack_client '|' \
-	decorate_info
-
-#    for future versions of 'dict' client
-#
-#    runpipe0 $PKG_ONLINE_DICT \
-#	-h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" -P - \
-#	-f -d pkgsrc-"$PKG_SUMMARY_TYPE"-info \
-#	"$@" '|' \
-#	decorate_info
-
-    exit 0
+    dbname=pkgsrc-${PKG_SUMMARY_TYPE}-info
+elif test $shortinfo; then
+    dbname=pkgsrc-${PKG_SUMMARY_TYPE}-shortinfo
 fi
 
-# -3
-if test $shortinfo; then
-    runpipe0 \
-	generate_rfc2229_query \
-	pkgsrc-${PKG_SUMMARY_TYPE}-shortinfo "$@" '|' \
+if test $dbname; then
+    runpipe_base \
+	generate_rfc2229_query "$dbname" "$@" '|' \
 	${PKG_ONLINE_NETCAT} "$PKG_ONLINE_SERVER" "$PKG_ONLINE_PORT" '|' \
 	quick_hack_client '|' \
 	decorate_info
@@ -337,11 +324,11 @@ if test $shortinfo; then
 #
 #    runpipe0 $PKG_ONLINE_DICT \
 #	-h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" -P - \
-#	-f -d pkgsrc-"$PKG_SUMMARY_TYPE"-shortinfo \
+#	-f -d "$dbname" \
 #	"$@" '|' \
 #	decorate_info
 
-    exit 0
+    exit $pipestatus_3
 fi
 
 # -1
@@ -351,7 +338,7 @@ if test $onelineinfo; then
 	echo $pkg >> $pkgs_fn
     done
 
-    runpipe0 \
+    runpipe_base \
 	generate_rfc2229_query \
 	pkgsrc-"$PKG_SUMMARY_TYPE"-onelineinfo "$@" '|' \
 	${PKG_ONLINE_NETCAT} "$PKG_ONLINE_SERVER" "$PKG_ONLINE_PORT" '|' \
@@ -366,7 +353,7 @@ if test $onelineinfo; then
 #	"$@" '|' \
 #	print_pkgname_and_onelineinfo
 
-    exit 0
+    exit $pipestatus_3
 fi
 
 # search queries
