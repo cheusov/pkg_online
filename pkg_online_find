@@ -69,12 +69,12 @@ while test $# -gt 0; do
         -h)
             usage
 	    exit 0;;
-	-*)
-	    printf "Bad option %s\n" "$1" 1>&2
-	    exit 1;;
         --)
             shift
 	    break;;
+	-*)
+	    printf "Bad option %s\n" "$1" 1>&2
+	    exit 1;;
 	*)
 	    break;;
     esac
@@ -208,7 +208,7 @@ pkg_online_client__fsq (){
     fi
 
     #
-    $PKG_ONLINE_CLIENT $quiet_mode "$field:$strat:$query"
+    $PKG_ONLINE_CLIENT $quiet_mode -- "$field:$strat:$query"
 }
 
 cnt_with=0
@@ -226,7 +226,7 @@ for q in "$@"; do
     if printf '%s\n' "$q" | grep '^[^:]*:[^:]*:[^:]*$' > /dev/null; then
 	pkg_online_client__fsq "$q" >> $res_fn
     else
-	pkg_online_client $quiet_mode "$q" >> $res_fn
+	pkg_online_client $quiet_mode -- "$q" >> $res_fn
     fi
 done
 
@@ -260,7 +260,7 @@ wrapper (){
 }
 
 run_pkg_online_client (){
-    $PKG_ONLINE_CLIENT $quiet_mode $info_type `cat $result_fn`
+    $PKG_ONLINE_CLIENT $quiet_mode $info_type -- `cat $result_fn`
 }
 
 if test -t 1 -a -n "$COLUMNS"; then

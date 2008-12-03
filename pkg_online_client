@@ -71,12 +71,12 @@ while test $# -gt 0; do
         -h)
             usage
 	    exit 0;;
-	-*)
-	    printf "Bad option %s\n" "$1" 1>&2
-	    exit 1;;
         --)
             shift
 	    break;;
+	-*)
+	    printf "Bad option %s\n" "$1" 1>&2
+	    exit 1;;
 	*)
 	    break;;
     esac
