@@ -1,5 +1,18 @@
 ======================================================================
 
+Version 0.7.0, by Aleksey Cheusov, Thu,  4 Dec 2008 00:18:04 +0200
+
+  !field:strategy:query means `AND NOT'
+     Example:
+       pkg_online_find MAINTAINER:substring:cheusov !PKGPATH:prefix:wip/
+
+  pkg_online_find wraps too long lines if COLUMNS environment variable
+  is set and output device is terminal.
+
+  minor fixes
+
+======================================================================
+
 Version 0.6.0, by Aleksey Cheusov, Sat,  1 Nov 2008 13:30:40 +0200
 
   ADDED: -q option to pkg_online_client and pkg_online_find tools.
