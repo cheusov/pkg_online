@@ -249,7 +249,14 @@ if ! test -s "$result_fn"; then
 fi
 
 wrapper (){
-    cut -c "$COLUMNS"
+    awk -v cols="$COLUMNS" '
+{
+   if (length($0) >= cols)
+      $0 = substr($0, 1, cols-1) ">"
+
+   print $0
+}
+' "$@"
 }
 
 run_pkg_online_client (){
