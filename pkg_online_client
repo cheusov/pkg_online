@@ -175,7 +175,7 @@ run_query__AI (){
 
 run_query (){
     # $1: dbname:strategy:query
-    if echo "$1" | grep '^[^:]*:[^:]*:[^:]*$' > /dev/null; then
+    if printf '%s\n' "$1" | grep '^[^:]*:[^:]*:[^:]*$' > /dev/null; then
 	run_query__fsq "$@"
     else
 	run_query__AI "$@"
@@ -335,7 +335,7 @@ fi
 if test $onelineinfo; then
     pkgs_fn=$tmp_dir/pkgs
     for pkg in "$@"; do
-	echo $pkg >> $pkgs_fn
+	echo "$pkg" >> $pkgs_fn
     done
 
     runpipe_base \
