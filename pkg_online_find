@@ -248,4 +248,16 @@ if ! test -s "$result_fn"; then
     no_matches_found
 fi
 
-$PKG_ONLINE_CLIENT $quiet_mode $info_type `cat $result_fn`
+wrapper (){
+    cut -c -60 #"$COLUMNS"
+}
+
+run_pkg_online_client (){
+    $PKG_ONLINE_CLIENT $quiet_mode $info_type `cat $result_fn`
+}
+
+if test -t 1 -a -n "$COLUMNS"; then
+    run_pkg_online_client | wrapper
+else
+    run_pkg_online_client
+fi
