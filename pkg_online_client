@@ -223,7 +223,14 @@ print_pkgpair_and_onelineinfo () {
     NF == 4 && !skip {
         getline onelineinfo
         getline pkgpair < pkgs_fn
-        printf "%20s - %s\n", pkgpair, onelineinfo
+        idx = index(pkgpair, ",")
+        pkgbase = substr(pkgpair, idx + 1)
+        pkgpath = substr(pkgpair, 1, idx - 1)
+
+        if (substr(pkgpair, idx - length(pkgbase), length(pkgbase)) == pkgbase)
+            printf "%20s - %s\n", pkgpath, onelineinfo
+        else
+            printf "%20s - %s\n", pkgpath "(" pkgbase ")", onelineinfo
         skip = 1
         fflush()
     }
