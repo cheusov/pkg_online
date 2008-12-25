@@ -4,6 +4,9 @@ Version 0.8.1, by Aleksey Cheusov, Thu, 25 Dec 2008 18:11:27 +0200
 
   PKGPATH:PKGNAME -> PKGPATH,PKGNAME
 
+  If PKGBASE is equal to package's directory, then only PKGPATH is
+  output, otherwise PKGPATH(PKGBASE) is output.
+
 ======================================================================
 
 Version 0.8.0, by Aleksey Cheusov, Thu, 25 Dec 2008 15:47:26 +0200
