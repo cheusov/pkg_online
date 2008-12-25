@@ -228,9 +228,9 @@ print_pkgpair_and_onelineinfo () {
         pkgpath = substr(pkgpair, 1, idx - 1)
 
         if (substr(pkgpair, idx - length(pkgbase), length(pkgbase)) == pkgbase)
-            printf "%20s - %s\n", pkgpath, onelineinfo
+            printf "%-25s - %s\n", pkgpath, onelineinfo
         else
-            printf "%20s - %s\n", pkgpath "(" pkgbase ")", onelineinfo
+            printf "%-25s - %s\n", pkgpath "(" pkgbase ")", onelineinfo
         skip = 1
         fflush()
     }
