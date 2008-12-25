@@ -45,27 +45,15 @@ NF == 1 {
     next
 }
 
-# <FIELD!>
-$1 == field_name {
-    copy = $0
-    sub(/^[^=]*=/, "", copy)
-
-    field = field " " copy
-}
-
 # PKGNAME
 $1 == "PKGNAME" {
     pkgname = $2
     sub(/-[^-]*$/, "", pkgname)
-
-    next
 }
 
 # PKGPATH
 $1 == "PKGPATH" {
     pkgpath = $2
-
-    next
 }
 
 # ONLY|NOT-FOR
@@ -79,9 +67,26 @@ $1 == field_name && field_name ~ /^(ONLY|NOT)FOR$/ {
 $1 == field_name && field_name == "PLIST" {
     sub(/^[^=]*=/, "")
 
-    plist [plist_count++] = $0
+    plist [++plist_count] = $0
 
     next
+}
+
+# DESCRIPTION
+$1 == field_name && field_name == "DESCRIPTION" {
+    sub(/^[^=]*=/, "")
+
+    descr [++descr_count] = $0
+
+    next
+}
+
+# <FIELD!>
+$1 == field_name {
+    copy = $0
+    sub(/^[^=]*=/, "", copy)
+
+    field = field " " copy
 }
 
 # printing
@@ -95,14 +100,23 @@ NF == 0 {
         if (field != ""){
             printf "_____\n\n%s\n", field "|%%|" pkgpath ":" pkgname
         }
-        for (i=0; i < plist_count; ++i){
+        for (i=1; i <= plist_count; ++i){
             printf "_____\n\n%s\n", plist [i] "|%%|" pkgpath ":" pkgname
+        }
+        if (descr_count){
+            printf "_____\n\n"
+            for (i=1; i <= descr_count; ++i){
+                if (i > 1) printf " "
+                printf "%s", descr [i]
+            }
+            printf "|%%%%|%s\n", pkgpath ":" pkgname
         }
     }
     field       = ""
     pkgpath     = ""
     pkgname     = ""
     plist_count = 0
+    descr_count = 0
 }
 ' "$@"
 }
