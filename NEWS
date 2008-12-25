@@ -10,7 +10,7 @@ Version 0.8.0, by Aleksey Cheusov, Thu, 25 Dec 2008 15:47:26 +0200
 
   Leading `-' sign is synomym to `!' and means `AND NOT.
   Example:
-    pkg_online_find MAINTAINER:substring:cheusov !PKGPATH:prefix:wip/
+    pkg_online_find MAINTAINER:substring:cheusov -PKGPATH:prefix:wip/
 
 ======================================================================
 

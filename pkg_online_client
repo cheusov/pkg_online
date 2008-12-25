@@ -34,14 +34,14 @@ usage: pkg_online_client field:strategy:query
        pkg_online_client -h
        pkg_online_client -f
        pkg_online_client -s
-       pkg_online_client -1|-3-9|-i [-r] [-q] pkgname1 [pkgname2...]
+       pkg_online_client -1|-3-9|-i [-r] [-q] pkgpair1 [pkgpair2...]
 OPTIONS:
    -h         display this screen
    -s         display available search strategies
    -f         display available fields for search in
-   -1         display 1-line information about packages (by PKGNAME)
-   -3         display short information about packages (by PKGNAME)
-   -9|-i      display full information about packages (by PKGNAME)
+   -1         display 1-line information about packages (by PKGPAIR)
+   -3         display short information about packages (by PKGPAIR)
+   -9|-i      display full information about packages (by PKGPAIR)
    -r         raw output in pkg_summary(5) format
    -q         quiet mode, do not print "No matches found" to stderr
 EOF
@@ -104,7 +104,7 @@ extract_fields (){
 	}'
 }
 
-extract_pkgname (){
+extract_pkgpair (){
     awk -F'\t' 'NF == 4 {print $4}'
 }
 
@@ -129,7 +129,7 @@ run_query__fsq (){
     if runpipe0 \
 	$PKG_ONLINE_DICT -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
 	    -m -f -d "$dbname" -s "$strat" -- "$query" '|' \
-	extract_pkgname '|' sort '|' uniq > "$res_fn" 2> "$log_fn"
+	extract_pkgpair '|' sort '|' uniq > "$res_fn" 2> "$log_fn"
     then
 	cat "$res_fn"
 	return 0
@@ -211,7 +211,7 @@ if test $dbs; then
 fi
 
 # -1
-print_pkgname_and_onelineinfo () {
+print_pkgpair_and_onelineinfo () {
     awk -v pkgs_fn="$pkgs_fn" -F'\t' '
     $0 ~ /^[0-9]/ && NF == 1 {
         skip = 0
@@ -220,8 +220,8 @@ print_pkgname_and_onelineinfo () {
 
     NF == 4 && !skip {
         getline onelineinfo
-        getline pkgname < pkgs_fn
-        printf "%20s - %s\n", pkgname, onelineinfo
+        getline pkgpair < pkgs_fn
+        printf "%20s - %s\n", pkgpair, onelineinfo
         skip = 1
         fflush()
     }
@@ -339,7 +339,7 @@ if test $onelineinfo; then
 	pkgsrc-"$PKG_SUMMARY_TYPE"-onelineinfo "$@" '|' \
 	${PKG_ONLINE_NETCAT} "$PKG_ONLINE_SERVER" "$PKG_ONLINE_PORT" '|' \
 	quick_hack_client '|' \
-	print_pkgname_and_onelineinfo
+	print_pkgpair_and_onelineinfo
 
 #    for future versions of 'dict' client
 #
@@ -347,7 +347,7 @@ if test $onelineinfo; then
 #	-h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" -P - \
 #	-f -d pkgsrc-"$PKG_SUMMARY_TYPE"-shortinfo \
 #	"$@" '|' \
-#	print_pkgname_and_onelineinfo
+#	print_pkgpair_and_onelineinfo
 
     exit $pipestatus_3
 fi
