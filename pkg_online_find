@@ -214,14 +214,14 @@ pkg_online_client__fsq (){
 cnt_with=0
 touch $tmp_dir/without.txt $tmp_dir/with_0.txt
 for q in "$@"; do
-    if printf '%s\n' "$q" | grep '^[!]' > /dev/null; then
+    if printf '%s\n' "$q" | grep '^[!-]' > /dev/null; then
 	res_fn=$tmp_dir/without.txt
     else
 	res_fn=$tmp_dir/with_$cnt_with.txt
 	cnt_with=$(($cnt_with+1))
     fi
 
-    q=$(printf '%s\n' "$q" | sed 's/^[!]//')
+    q=$(printf '%s\n' "$q" | sed 's/^[!-]//')
 
     if printf '%s\n' "$q" | grep '^[^:]*:[^:]*:[^:]*$' > /dev/null; then
 	pkg_online_client__fsq "$q" >> $res_fn
