@@ -22,8 +22,13 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 NF == 0 {
-	printf "_____\n\n%s%s\n\n", pkgbase, summary
-	summary = pkgbase = ""
+	printf "_____\n\n%s:%s\n", pkgpath, pkgbase
+	for (i=1; i <= count; ++i){
+		print summary [i]
+	}
+	print ""
+	pkgbase = pkgpath = ""
+	count = 0
 	next
 }
 
@@ -32,5 +37,8 @@ NF == 0 {
 		pkgbase = substr($0, 9)
 		sub(/-[^-]*$/, "", pkgbase)
 	}
-	summary = (summary "\n" $0)
+	if ($0 ~ /^PKGPATH=/){
+		pkgpath = substr($0, 9)
+	}
+	summary [++count] = $0
 }
