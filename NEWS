@@ -2,7 +2,7 @@
 
 Version 0.8.1, by Aleksey Cheusov, Thu, 25 Dec 2008 18:11:27 +0200
 
-  PKGPATH:PKGNAME -> PKGPATH|PKGNAME
+  PKGPATH:PKGNAME -> PKGPATH,PKGNAME
 
 ======================================================================
 
