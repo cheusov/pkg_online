@@ -124,11 +124,7 @@ run_query__fsq (){
 	exit 2
     fi
 
-    if test _"$field" = _PKGNAME; then
-	dbname="pkgsrc-${PKG_SUMMARY_TYPE}-info"
-    else
-	dbname="pkgsrc-${PKG_SUMMARY_TYPE}-index-${field}"
-    fi
+    dbname="pkgsrc-${PKG_SUMMARY_TYPE}-index-${field}"
 
     if runpipe0 \
 	$PKG_ONLINE_DICT -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
