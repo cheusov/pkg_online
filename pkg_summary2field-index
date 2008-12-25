@@ -45,10 +45,25 @@ NF == 1 {
     next
 }
 
+# <FIELD!>
+$1 == field_name {
+    copy = $0
+    sub(/^[^=]*=/, "", copy)
+
+    field = field " " copy
+}
+
 # PKGNAME
 $1 == "PKGNAME" {
     pkgname = $2
     sub(/-[^-]*$/, "", pkgname)
+
+    next
+}
+
+# PKGPATH
+$1 == "PKGPATH" {
+    pkgpath = $2
 
     next
 }
@@ -69,26 +84,23 @@ $1 == field_name && field_name == "PLIST" {
     next
 }
 
-# <FIELD!>
-$1 == field_name {
-    sub(/^[^=]*=/, "")
-
-    field = field " " $0
-
-    next
-}
-
 # printing
 NF == 0 {
+    if (field_name == "PKGNAME"){
+        field = pkgname
+    }else{
+        field = substr(field, 2)
+    }
     if (pkgname != ""){
         if (field != ""){
-            printf "_____\n\n%s\n", substr(field, 2) "|%%|" pkgname
+            printf "_____\n\n%s\n", field "|%%|" pkgpath ":" pkgname
         }
         for (i=0; i < plist_count; ++i){
-            printf "_____\n\n%s\n", plist [i] "|%%|" pkgname
+            printf "_____\n\n%s\n", plist [i] "|%%|" pkgpath ":" pkgname
         }
     }
     field       = ""
+    pkgpath     = ""
     pkgname     = ""
     plist_count = 0
 }
