@@ -52,8 +52,8 @@ awk '
 }
 
 NF == 0 {
-    printf "_____\n\n%s\n%s\n", pkgname, comment
-#    printf "_____\n\n%s\n%10s - %s\n", pkgname, pkgpath, comment
+    printf "_____\n\n%s:%s\n%s\n", pkgpath, pkgname, comment
+    pkgname = pkgpath = comment = ""
 }
 ' "$@"
 }
