@@ -136,7 +136,7 @@ run_query__fsq (){
     else
 	case "$pipestatus_1" in
 	    20)
-		no_matches_msg "No matches found for field=$field strategy=$strat query=$query"
+		no_matches_msg "No matches found for field='$field' strategy='$strat' query='$query'"
 		return 20;;
 	    *)
 		cat "$log_fn" 1>&2
