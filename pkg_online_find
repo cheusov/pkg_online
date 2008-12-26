@@ -183,9 +183,9 @@ FILENAME == minuend {
 
 # search images...
 pkg_online_client__fsq (){
-    field=`printf '%s\n' $1 | cut -d: -f1`
-    strat=`printf '%s\n' $1 | cut -d: -f2`
-    query=`printf '%s\n' $1 | cut -d: -f3`
+    field=`printf '%s\n' "$1" | cut -d: -f1`
+    strat=`printf '%s\n' "$1" | cut -d: -f2`
+    query=`printf '%s\n' "$1" | cut -d: -f3`
 
     # short names for strategies
     if test -z "$strat"; then
