@@ -13,7 +13,7 @@ Version 0.8.0, by Aleksey Cheusov, Thu, 25 Dec 2008 15:47:26 +0200
 
   (PKGPATH,PKGNAME) pair is used as a package identifier.
   Now
-    pkg_online_fine -3 PKGPATH:exact:editors/emacs
+    pkg_online_find -3 PKGPATH:exact:editors/emacs
   command shows an information about editors/emacs package only,
   not about editors/emacs-current having the same PKGBASE.
 
