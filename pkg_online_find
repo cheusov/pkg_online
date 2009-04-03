@@ -145,7 +145,7 @@ if test $fields; then
     exit 0
 fi
 
-# searching
+#
 if test $# -eq 0; then
     usage
     exit 1

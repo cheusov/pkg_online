@@ -36,7 +36,7 @@ usage: pkg_online_client field:strategy:query
        pkg_online_client -s
        pkg_online_client -1|-3|-9|-i [-r] [-q] pkgpair1 [pkgpair2...]
        pkg_online_client query
-where pkgpair is pkgpath,pkgname
+where pkgpair is PKGPATH,PKGNAME
 OPTIONS:
    -h         display this screen
    -s         display available search strategies
