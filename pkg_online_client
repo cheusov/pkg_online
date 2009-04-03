@@ -30,10 +30,11 @@ export LC_ALL=C
 
 usage () {
 cat <<EOF
-usage: pkg_online_client field:strategy:query
-       pkg_online_client -h
+usage: pkg_online_client -h
        pkg_online_client -f
        pkg_online_client -s
+       pkg_online_client -A query
+       pkg_online_client field:strategy:query
        pkg_online_client -1|-3|-9|-i [-r] [-q] pkgpair1 [pkgpair2...]
        pkg_online_client query
 where pkgpair is PKGPATH,PKGNAME
@@ -46,6 +47,8 @@ OPTIONS:
    -9|-i      display full information about packages (by PKGPAIR)
    -r         raw output in pkg_summary(5) format
    -q         quiet mode, do not print "No matches found" to stderr
+   -A         enable "Artificial Intelligence" :-), i.e. try several
+              searching schemes sequentially
 EOF
 }
 
@@ -70,6 +73,8 @@ while test $# -gt 0; do
             raw_format=1;;
         -q)
             quiet_mode=1;;
+        -A)
+            ai_mode=1;;
         -h)
             usage
 	    exit 0;;
@@ -175,8 +180,17 @@ run_query (){
     # $1: dbname:strategy:query
     if printf '%s\n' "$1" | grep '^[^:]*:[^:]*:[^:]*$' > /dev/null; then
 	run_query__fsq "$@"
-    else
+    elif test -n "$ai_mode"; then
 	run_query__AI "$@"
+    else
+	cat 1>&2 <<EOF
+Bad argument, apply -A or run
+
+  pkg_online_client -h
+
+for help message
+EOF
+	exit 1
     fi
 }
 
