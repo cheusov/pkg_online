@@ -2,7 +2,7 @@
 
 Version 0.9.1, by Aleksey Cheusov, Sat, 27 Dec 2008 00:51:02 +0200
 
-  FIXED: pkg_online_find failes when query contains spaces
+  FIXED: pkg_online_find fails when query contains spaces
   (missed "" around $variable)
 
 ======================================================================
