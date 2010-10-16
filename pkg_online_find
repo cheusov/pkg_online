@@ -50,36 +50,29 @@ OPTIONS:
 EOF
 }
 
-while test $# -gt 0; do
-    case "$1" in
-        -s)
+while getopts sfi931rqh f; do
+    case "$f" in
+        s)
             strats=1;;
-        -f)
+        f)
             fields=1;;
-        -i|-9)
+        i|9)
             info_type="$info_type -9";;
-        -3)
+        3)
             info_type="$info_type -3";;
-        -1)
+        1)
             info_type="$info_type -1";;
-        -r)
+        r)
             info_type="$info_type -r";;
-        -q)
+        q)
             quiet_mode='-q';;
-        -h)
+        h)
             usage
 	    exit 0;;
-        --)
-            shift
-	    break;;
-	-*)
-	    printf "Bad option %s\n" "$1" 1>&2
-	    exit 1;;
-	*)
-	    break;;
     esac
-    shift
 done
+
+shift `expr $OPTIND - 1`
 
 info_type=${info_type:--1} # the default is one-line information
 
