@@ -99,7 +99,9 @@ extract_fields (){
 }
 
 extract_pkgpair (){
-    awk -v limit="$limit" -F'\t' 'NF == 4 {print $4; ++cnt; if (cnt == limit) exit 0}'
+    awk -v limit="$limit" -F'\t' \
+	'$4 ~ /^00-?database/ {next}
+	NF == 4 {print $4; ++cnt; if (cnt == limit) exit 0}'
 }
 
 no_matches_msg (){
