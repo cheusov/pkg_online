@@ -60,6 +60,7 @@ while getopts sfi931rqh f; do
         r)    info_type="$info_type -r";;
         q)    quiet_mode='-q';;
         h)    usage; exit 0;;
+	?)    printf "Run pkg_online_find -h for details\n"; exit 2;;
     esac
 done
 
