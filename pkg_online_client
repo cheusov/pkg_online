@@ -126,7 +126,7 @@ run_query__fsq (){
 	    ;;
 	22|23|30|31|32|33|34|35|36|37|38|39|40|41)
 	    cat "$log_fn" 1>&2
-	    exit $ret;;
+	    return $ret;;
 	0|21)
 	    echo '' > "$ok_fn";;
     esac
@@ -146,7 +146,7 @@ run_query__AI (){
 		;;
 	    22|23|30|31|32|33|34|35|36|37|38|39|40|41)
 		cat "$log_fn" 1>&2
-		exit "$ret";;
+		return "$ret";;
 	    0|21)
 		echo '' > "$ok_fn"
 		break;;
@@ -154,15 +154,19 @@ run_query__AI (){
     done
 }
 
-run_query (){
-    # $i: dbname:strategy:query or AI
+run_query_all (){
     for i in "$@"; do
 	if printf '%s\n' "$i" | grep '^[^:]*:[^:]*:[^:]*$' > /dev/null; then
-	    run_query__fsq "$i"
+	    run_query__fsq "$i" || return $?
 	else
-	    run_query__AI "$i"
+	    run_query__AI "$i" || return $?
 	fi
-    done | extract_pkgpair
+    done
+}
+
+run_query (){
+    # $i: dbname:strategy:query or AI
+    runpipe0 run_query_all "$@" '|' extract_pkgpair
 
     if test -f "$ok_fn"; then
 	exit 0
