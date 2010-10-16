@@ -211,7 +211,7 @@ for q in "$@"; do
     if printf '%s\n' "$q" | grep '^[^:]*:[^:]*:[^:]*$' > /dev/null; then
 	pkg_online_client__fsq "$q" >> $res_fn
     else
-	$PKG_ONLINE_CLIENT $quiet_mode -A -- "$q" >> $res_fn
+	$PKG_ONLINE_CLIENT $quiet_mode -- "$q" >> $res_fn
     fi
 done
 
