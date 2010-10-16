@@ -133,12 +133,13 @@ run_query__fsq (){
 run_query_all (){
     for i in "$@"; do
 	if printf '%s\n' "$i" | grep '^[^:]*:[^:]*:[^:]*$' > /dev/null; then
-	    run_query__fsq "$i" || return $?
+	    run_query__fsq "$i" & #|| return $?
 	else
 	    echo "Incorrect search pattern '$i'" 1>&2
 	    return 1
 	fi
     done
+    wait
 }
 
 run_query (){
