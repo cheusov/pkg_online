@@ -122,10 +122,10 @@ run_query__fsq (){
 
     dbname="pkgsrc-${PKG_SUMMARY_TYPE}-index-${field}"
 
-    if runpipe_re '(0|141) 0 0 0' \
+    if runpipe_re '(0|141) 0 0' \
 	$PKG_ONLINE_DICT -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
 	    -m -f -d "$dbname" -s "$strat" -- "$query" '|' \
-	extract_pkgpair '|' sort '|' uniq > "$res_fn" 2> "$log_fn"
+	extract_pkgpair '|' sort -u > "$res_fn" 2> "$log_fn"
     then
 	cat "$res_fn"
 	return 0
