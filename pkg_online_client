@@ -33,10 +33,10 @@ cat <<EOF
 usage: pkg_online_client -h
        pkg_online_client -f
        pkg_online_client -s
-       pkg_online_client -A query
-       pkg_online_client [-n] field:strategy:query
+       pkg_online_client [-n] fsq1 [fsq2 ...]
        pkg_online_client -1|-3|-9|-i [-r] [-q] pkgpair1 [pkgpair2...]
-where pkgpair is PKGPATH,PKGNAME
+where pkgpair is <PKGPATH>,<PKGNAME>
+and fsq is <field>:<strategy>:<query>
 OPTIONS:
    -h         display this screen
    -s         display available search strategies
@@ -46,8 +46,6 @@ OPTIONS:
    -9|-i      display full information about packages (by PKGPAIR)
    -r         raw output in pkg_summary(5) format
    -q         quiet mode, do not print "No matches found" to stderr
-   -A         enable "Artificial Intelligence" :-), i.e. try several
-              searching schemes sequentially
    -n <limit>    maximum number of results
 EOF
 }
@@ -59,7 +57,7 @@ fi
 
 limit=1000000000
 
-while getopts hsf139irqAn: f; do
+while getopts hsf139irqn: f; do
     case "$f" in
         s)    strats=1;;
         f)    dbs=1;;
@@ -68,7 +66,6 @@ while getopts hsf139irqAn: f; do
         1)    onelineinfo=1;;
         r)    raw_format=1;;
         q)    quiet_mode=1;;
-        A)    ai_mode=1;;
 	n)    limit=$OPTARG;;
         h)    usage; exit 0;;
 	?)    printf "Run pkg_online_client -h for details\n"; exit 2;;
@@ -121,16 +118,16 @@ run_query__fsq (){
     $PKG_ONLINE_DICT -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
 	    -m -f -d "$dbname" -s "$strat" -- "$query" 2> "$log_fn"
     ret=$?
+    set -e
     case $ret in
 	20)
 	    ;;
-	22|23|30|31|32|33|34|35|36|37|38|39|40|41)
-	    cat "$log_fn" 1>&2
-	    return $ret;;
 	0|21)
 	    echo '' > "$ok_fn";;
+	*)
+	    cat "$log_fn" 1>&2
+	    return $ret;;
     esac
-    set -e
 }
 
 run_query__AI (){
@@ -143,13 +140,13 @@ run_query__AI (){
 
 	case $ret in
 	    20)
-		;;
-	    22|23|30|31|32|33|34|35|36|37|38|39|40|41)
-		cat "$log_fn" 1>&2
-		return "$ret";;
+		true;;
 	    0|21)
 		echo '' > "$ok_fn"
 		break;;
+	    *)
+		cat "$log_fn" 1>&2
+		return "$ret";;
 	esac
     done
 }
