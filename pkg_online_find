@@ -52,23 +52,14 @@ EOF
 
 while getopts sfi931rqh f; do
     case "$f" in
-        s)
-            strats=1;;
-        f)
-            fields=1;;
-        i|9)
-            info_type="$info_type -9";;
-        3)
-            info_type="$info_type -3";;
-        1)
-            info_type="$info_type -1";;
-        r)
-            info_type="$info_type -r";;
-        q)
-            quiet_mode='-q';;
-        h)
-            usage
-	    exit 0;;
+        s)    strats=1;;
+        f)    fields=1;;
+        i|9)  info_type="$info_type -9";;
+        3)    info_type="$info_type -3";;
+        1)    info_type="$info_type -1";;
+        r)    info_type="$info_type -r";;
+        q)    quiet_mode='-q';;
+        h)    usage; exit 0;;
     esac
 done
 
@@ -219,7 +210,7 @@ for q in "$@"; do
     if printf '%s\n' "$q" | grep '^[^:]*:[^:]*:[^:]*$' > /dev/null; then
 	pkg_online_client__fsq "$q" >> $res_fn
     else
-	pkg_online_client $quiet_mode -- "$q" >> $res_fn
+	pkg_online_client $quiet_mode -A -- "$q" >> $res_fn
     fi
 done
 
