@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2007-2008 Aleksey Cheusov <vle@gmx.net>
+# Copyright (c) 2007-2010 Aleksey Cheusov <vle@gmx.net>
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -210,7 +210,7 @@ for q in "$@"; do
     if printf '%s\n' "$q" | grep '^[^:]*:[^:]*:[^:]*$' > /dev/null; then
 	pkg_online_client__fsq "$q" >> $res_fn
     else
-	pkg_online_client $quiet_mode -A -- "$q" >> $res_fn
+	$PKG_ONLINE_CLIENT $quiet_mode -A -- "$q" >> $res_fn
     fi
 done
 
