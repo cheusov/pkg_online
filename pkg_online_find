@@ -216,7 +216,6 @@ for q in "$@"; do
 	    query="$query $rule:$q"
 	done
 	$PKG_ONLINE_CLIENT $quiet_mode $query >> $res_fn
-	echo =========================================================
     fi
 done
 
