@@ -130,40 +130,20 @@ run_query__fsq (){
     esac
 }
 
-run_query__AI (){
-    # $1: query
-    for rule in $PKG_ONLINE_FALLBACK_RULES; do
-	set +e
-	run_query__fsq "$rule:$1" 2> "$log_fn"
- 	ret=$?
- 	set -e
-
-	case $ret in
-	    20)
-		true;;
-	    0|21)
-		echo '' > "$ok_fn"
-		break;;
-	    *)
-		cat "$log_fn" 1>&2
-		return "$ret";;
-	esac
-    done
-}
-
 run_query_all (){
     for i in "$@"; do
 	if printf '%s\n' "$i" | grep '^[^:]*:[^:]*:[^:]*$' > /dev/null; then
 	    run_query__fsq "$i" || return $?
 	else
-	    run_query__AI "$i" || return $?
+	    echo "Incorrect search pattern '$i'" 1>&2
+	    return 1
 	fi
     done
 }
 
 run_query (){
-    # $i: dbname:strategy:query or AI
-    runpipe0 run_query_all "$@" '|' extract_pkgpair
+    # $i: dbname:strategy:query
+    runpipe0 run_query_all "$@" '|' extract_pkgpair '|' sort -u
 
     if test -f "$ok_fn"; then
 	exit 0
