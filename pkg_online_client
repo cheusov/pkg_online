@@ -101,13 +101,7 @@ extract_fields (){
 extract_pkgpair (){
     awk -v limit="$limit" -F'\t' \
 	'$4 ~ /^00-?database/ {next}
-	NF == 4 {print $4; ++cnt; if (cnt == limit) exit 0}'
-}
-
-no_matches_msg (){
-    if test -z "$quiet_mode"; then
-	printf '%s\n' "$@" 1>&2
-    fi
+	NF == 4 {print $4; ++cnt; if (cnt == limit) exit 0}' "$@"
 }
 
 run_query__fsq (){
@@ -122,64 +116,61 @@ run_query__fsq (){
 
     dbname="pkgsrc-${PKG_SUMMARY_TYPE}-index-${field}"
 
-    if runpipe_re '(0|141) 0 0' \
-	$PKG_ONLINE_DICT -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
-	    -m -f -d "$dbname" -s "$strat" -- "$query" '|' \
-	extract_pkgpair '|' sort -u > "$res_fn" 2> "$log_fn"
-    then
-	cat "$res_fn"
-	return 0
-    else
-	case "$pipestatus_1" in
-	    20)
-		no_matches_msg "No matches found for field='$field' strategy='$strat' query='$query'"
-		return 20;;
-	    *)
-		cat "$log_fn" 1>&2
-		return $pipestatus_1;;
-	esac
-    fi
+    set +e
+    $PKG_ONLINE_DICT -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
+	    -m -f -d "$dbname" -s "$strat" -- "$query" \
+	    >> "$res_fn" 2> "$log_fn"
+    ret=$?
+    case $ret in
+	20)
+	    ;;
+	22|23|30|31|32|33|34|35|36|37|38|39|40|41)
+	    cat "$log_fn" 1>&2
+	    exit $ret;;
+	0|21)
+	    return 0;;
+    esac
+    set -e
 }
 
 run_query__AI (){
     # $1: query
     for rule in $PKG_ONLINE_FALLBACK_RULES; do
 	set +e
-	pkg_online_client "$rule:$1" > "$res_fn" 2> "$log_fn"
-	ret=$?
-	set -e
+	run_query__fsq "$rule:$1" >> "$res_fn" 2> "$log_fn"
+ 	ret=$?
+ 	set -e
 
 	case $ret in
 	    20)
 		;;
 	    22|23|30|31|32|33|34|35|36|37|38|39|40|41)
 		cat "$log_fn" 1>&2
-		return 20;;
+		exit "$ret";;
 	    0|21)
-		cat "$res_fn"
 		return 0;;
 	esac
     done
-
-    no_matches_msg "No matches found for $1"
-    return 20
 }
 
 run_query (){
-    # $1: dbname:strategy:query
-    if printf '%s\n' "$1" | grep '^[^:]*:[^:]*:[^:]*$' > /dev/null; then
-	run_query__fsq "$@"
-    elif test -n "$ai_mode"; then
-	run_query__AI "$@"
+    # $i: dbname:strategy:query or AI
+    for i in "$@"; do
+	if printf '%s\n' "$i" | grep '^[^:]*:[^:]*:[^:]*$' > /dev/null; then
+	    run_query__fsq "$i"
+	else
+	    run_query__AI "$i"
+	fi
+    done
+
+    if test -s "$res_fn"; then
+	extract_pkgpair "$res_fn"
+	exit 0
     else
-	cat 1>&2 <<EOF
-Bad argument, apply -A or run
-
-  pkg_online_client -h
-
-for help message
-EOF
-	exit 1
+	if test -z "$quiet_mode"; then
+	    cat "$log_fn" 1>&2
+	fi
+	exit 20
     fi
 }
 
@@ -365,6 +356,4 @@ if test $onelineinfo; then
 fi
 
 # search queries
-for q in "$@"; do
-    run_query "$q"
-done
+run_query "$@"
