@@ -84,6 +84,7 @@ mkdir -m 700 "$tmp_dir"
 
 res_fn=$tmp_dir/result.txt
 log_fn=$tmp_dir/errors.log
+ok_fn=$tmp_dir/ok
 
 #
 extract_strat (){
@@ -118,8 +119,7 @@ run_query__fsq (){
 
     set +e
     $PKG_ONLINE_DICT -h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" \
-	    -m -f -d "$dbname" -s "$strat" -- "$query" \
-	    >> "$res_fn" 2> "$log_fn"
+	    -m -f -d "$dbname" -s "$strat" -- "$query" 2> "$log_fn"
     ret=$?
     case $ret in
 	20)
@@ -128,7 +128,7 @@ run_query__fsq (){
 	    cat "$log_fn" 1>&2
 	    exit $ret;;
 	0|21)
-	    return 0;;
+	    echo '' > "$ok_fn";;
     esac
     set -e
 }
@@ -137,7 +137,7 @@ run_query__AI (){
     # $1: query
     for rule in $PKG_ONLINE_FALLBACK_RULES; do
 	set +e
-	run_query__fsq "$rule:$1" >> "$res_fn" 2> "$log_fn"
+	run_query__fsq "$rule:$1" 2> "$log_fn"
  	ret=$?
  	set -e
 
@@ -148,7 +148,8 @@ run_query__AI (){
 		cat "$log_fn" 1>&2
 		exit "$ret";;
 	    0|21)
-		return 0;;
+		echo '' > "$ok_fn"
+		break;;
 	esac
     done
 }
@@ -161,10 +162,9 @@ run_query (){
 	else
 	    run_query__AI "$i"
 	fi
-    done
+    done | extract_pkgpair
 
-    if test -s "$res_fn"; then
-	extract_pkgpair "$res_fn"
+    if test -f "$ok_fn"; then
 	exit 0
     else
 	if test -z "$quiet_mode"; then
