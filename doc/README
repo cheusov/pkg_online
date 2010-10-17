@@ -159,8 +159,6 @@ Sample of client usage:
          PKGNAME:substring
          COMMENT:word
          COMMENT:substring
-         DESCRIPTION:word
-         DESCRIPTION:substring
 
     As you can see first two items are PKGNAME:exact and PKGPATH:exact.
     This is why example (***) above works.
