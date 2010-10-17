@@ -213,7 +213,7 @@ for q in "$@"; do
     else
 	query=''
 	for rule in $PKG_ONLINE_FALLBACK_RULES; do
-	    query="$query $rule:$q"
+	    query="$query '$rule:$q'"
 	done
 	$PKG_ONLINE_CLIENT $quiet_mode $query >> $res_fn
     fi
