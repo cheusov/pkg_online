@@ -1,21 +1,12 @@
 ##################################################
 
-PREFIX?=	/usr/local
-BINDIR?=	${PREFIX}/bin
-MANDIR?=	${PREFIX}/man
 DOCDIR?=	${PREFIX}/share/doc/pkg_online
 
-INST_DIR?=	${INSTALL} -d
-
 ##################################################
-
-.include "Makefile.version"
 
 PROJECTNAME=	pkg_online
 
 BIRTHDATE=	2008-02-03
-
-MKMAN=		no
 
 SCRIPTS_CLIENT=	pkg_online_find pkg_online_client
 SCRIPTS_SERVER=	pkg_summary2dict pkg_summary2onelineinfo \
@@ -39,17 +30,5 @@ install-server:
 
 ##################################################
 
-.PHONY: install-dirs
-install-dirs:
-	$(INST_DIR) ${DESTDIR}${BINDIR}
-	$(INST_DIR) ${DESTDIR}${DOCDIR}
-.if "$(MKMAN)" != "no"
-	$(INST_DIR) ${DESTDIR}${MANDIR}/man1
-.if "$(MKCATPAGES)" != "no"
-	$(INST_DIR) ${DESTDIR}${MANDIR}/cat1
-.endif
-.endif
-
-##################################################
-
-.include <bsd.prog.mk>
+.include "version.mk"
+.include <mkc.prog.mk>
