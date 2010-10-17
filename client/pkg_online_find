@@ -215,7 +215,7 @@ for q in "$@"; do
 	for rule in $PKG_ONLINE_FALLBACK_RULES; do
 	    query="$query '$rule:$q'"
 	done
-	$PKG_ONLINE_CLIENT $quiet_mode $query >> $res_fn
+	eval "$PKG_ONLINE_CLIENT $quiet_mode $query" >> $res_fn
     fi
 done
 
