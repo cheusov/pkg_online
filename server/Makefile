@@ -1,10 +1,3 @@
-##################################################
-
-DOCDIR?=	${PREFIX}/share/doc/pkg_online
-EGDIR?=		${DOCDIR}/examples
-
-##################################################
-
 PROJECTNAME=	pkg_online_server
 
 SCRIPTS=	pkg_summary2dict pkg_summary2onelineinfo \
@@ -16,7 +9,5 @@ FILESDIR=				${EGDIR}
 FILESDIR_pkg_online_server.env=		${BINDIR}
 
 INFILES=		pkg_online_server.env
-
-##################################################
 
 .include <mkc.files.mk>
