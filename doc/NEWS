@@ -1,12 +1,36 @@
 ======================================================================
+Version 0.10.0, by Aleksey Cheusov, Sun, 17 Oct 2010 16:55:07 +0300
 
+  Now pkg_online_client and pkg_online_find conform to POSIX Utility
+      Syntax Guideline, for example, you can runn the following
+
+      pkg_online_find -r3 runawk.
+
+  pkg_online_client/pkg_online_find and server-size tools now use
+  .conf files (pkg_online_client.conf and pkg_online_server.conf)
+  placed under sysconfdir directory or user's home.
+
+  Build system has changed to mk-configure and the project structure
+  has been reorganized.
+
+  New option -n were added to pkg_online_client.
+
+  FIX: dictd's special entries (00-database-xxx) are ignored by
+  pkg_online_client.
+
+  AI logic has moved from pkg_online_client to pkg_online_find.
+
+  DESCRPTION:xxx entries were removed from PKG_ONLINE_FALLBACK_RULES.
+
+  Several "dict" clients run in parallel. This gives ~25% speed-up.
+
+======================================================================
 Version 0.9.1, by Aleksey Cheusov, Sat, 27 Dec 2008 00:51:02 +0200
 
   FIXED: pkg_online_find fails when query contains spaces
   (missed "" around $variable)
 
 ======================================================================
-
 Version 0.9.0, by Aleksey Cheusov, Thu, 25 Dec 2008 18:11:27 +0200
 
   PKGPATH:PKGNAME -> PKGPATH,PKGNAME
@@ -15,7 +39,6 @@ Version 0.9.0, by Aleksey Cheusov, Thu, 25 Dec 2008 18:11:27 +0200
   output, otherwise PKGPATH(PKGBASE) is output.
 
 ======================================================================
-
 Version 0.8.0, by Aleksey Cheusov, Thu, 25 Dec 2008 15:47:26 +0200
 
   (PKGPATH,PKGNAME) pair is used as a package identifier.
@@ -29,7 +52,6 @@ Version 0.8.0, by Aleksey Cheusov, Thu, 25 Dec 2008 15:47:26 +0200
     pkg_online_find MAINTAINER:substring:cheusov -PKGPATH:prefix:wip/
 
 ======================================================================
-
 Version 0.7.0, by Aleksey Cheusov, Thu, 4 Dec 2008 00:18:04 +0200
 
   !field:strategy:query means `AND NOT'
@@ -42,7 +64,6 @@ Version 0.7.0, by Aleksey Cheusov, Thu, 4 Dec 2008 00:18:04 +0200
   minor fixes
 
 ======================================================================
-
 Version 0.6.0, by Aleksey Cheusov, Sat, 1 Nov 2008 13:30:40 +0200
 
   ADDED: -q option to pkg_online_client and pkg_online_find tools.
@@ -54,7 +75,6 @@ Version 0.6.0, by Aleksey Cheusov, Sat, 1 Nov 2008 13:30:40 +0200
   .sinclude removed from Makefile
 
 ======================================================================
-
 Version 0.5.0, by Aleksey Cheusov, Fri, 10 Oct 2008 23:10:33 +0300
 
   INFO and SHORT-INFO databases contain pkg_summary(5)-formatted
@@ -67,7 +87,6 @@ Version 0.5.0, by Aleksey Cheusov, Fri, 10 Oct 2008 23:10:33 +0300
   be used in conjunction with pkg_summary-utils(7).
 
 ======================================================================
-
 Version 0.4.0, by Aleksey Cheusov, Sun, 11 May 2008 18:04:38 +0300
 
     As of pkg_online version 0.4.0 pkg_online_find and
@@ -98,7 +117,6 @@ Version 0.4.0, by Aleksey Cheusov, Sun, 11 May 2008 18:04:38 +0300
    note that the default value of this variable may change in the future.
 
 ======================================================================
-
 Version 0.3.3, by Aleksey Cheusov, Sun, 11 May 2008 11:51:53 +0300
 
   FIX: pkg_summary2field-index works incorrectly if PKGNAME is not
@@ -112,7 +130,6 @@ Version 0.3.3, by Aleksey Cheusov, Sun, 11 May 2008 11:51:53 +0300
     CATEGORIES, SIZE_PKG
 
 ======================================================================
-
 Version 0.3.2, by Aleksey Cheusov, Sun, 13 Apr 2008 13:55:03 +0300
 
   PKGNAME is included to short summary
@@ -120,14 +137,12 @@ Version 0.3.2, by Aleksey Cheusov, Sun, 13 Apr 2008 13:55:03 +0300
      i.e.  PKGNAME should NOT be the first one.
 
 ======================================================================
-
 Version 0.3.1, by Aleksey Cheusov, Fri, 22 Feb 2008 00:56:09 +0200
 
   FIXED: -1 option may work incorrectly if multiple packages are found
   for single query
 
 ======================================================================
-
 Version 0.3.0, by Aleksey Cheusov, Tue,  5 Feb 2008 23:20:19 +0200
 
    Server can now return so called "shortinfo", see -3 option below.
