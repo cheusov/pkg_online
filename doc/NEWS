@@ -1,4 +1,13 @@
 ======================================================================
+Version 0.11.0, by Aleksey Cheusov, Sat, 27 Nov 2010 02:13:57 +0200
+
+  pkg_online_find is fully reimplemented and is trivial wrapper over
+  pkg_digger. pkg_summary>=0.49.0 is needed at run time.
+
+  Config file ~/.pkg_online_client.conf
+   has been renamed to ~/.pkg_online_client
+
+======================================================================
 Version 0.10.0, by Aleksey Cheusov, Sun, 17 Oct 2010 16:55:07 +0300
 
   Now pkg_online_client and pkg_online_find conform to POSIX Utility

@@ -59,6 +59,9 @@ Requirements:
     - netcat,
       packaged in pkgsrc/net/netcat
 
+    - pkg_summary-utils>=0.49,
+      packaged in pkgsrc/wip/pkg_summary-utils
+
     - mk-configure
       http://sourceforge.net/projects/mk-configure/
       packaged in wip/mk-configure
@@ -181,9 +184,8 @@ Environment variables:
 
    PKG_ONLINE_SERVER () - dictionary server host name
    PKG_ONLINE_PORT ()   - dictionary server port
-   PKG_ONLINE_CLIENT (pkg_online_client) - override it if you want
-      to implement offline search, new search strategies without
-      reimplemeneting dictionary server or anything you need.
+   PKG_ONLINE_CLIENT (pkg_online_client) - override it if you want to,
+      also see pkg_digger(1) and variable PKG_DIGGER_BACKEND.
    PKG_ONLINE_DICT (dict) - path to dictionary protocol client.
    PKG_SUMMARY_TYPE (src) - "src" or "bin" for source or binary summary
       (output of 'wip/pkg_src_summary' or 'pkg_info -X')
