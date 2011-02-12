@@ -45,10 +45,10 @@ NF == 1 {
     next
 }
 
-# PKGNAME
+# PKGBASE
 $1 == "PKGNAME" {
-    pkgname = $2
-    sub(/-[^-]*$/, "", pkgname)
+    pkgbase = $2
+    sub(/-[^-]*$/, "", pkgbase)
 }
 
 # PKGPATH
@@ -87,21 +87,23 @@ $1 == field_name {
     sub(/^[^=]*=/, "", copy)
 
     field = field " " copy
+
+    next
 }
 
 # printing
 NF == 0 {
-    if (field_name == "PKGNAME"){
-        field = pkgname
+    if (field_name == "PKGBASE"){
+        field = pkgbase
     }else{
         field = substr(field, 2)
     }
-    if (pkgname != ""){
+    if (pkgbase != ""){
         if (field != ""){
-            printf "_____\n\n%s\n", field "|%%|" pkgpath "," pkgname
+            printf "_____\n\n%s\n", field "|%%|" pkgpath "," pkgbase
         }
         for (i=1; i <= plist_count; ++i){
-            printf "_____\n\n%s\n", plist [i] "|%%|" pkgpath "," pkgname
+            printf "_____\n\n%s\n", plist [i] "|%%|" pkgpath "," pkgbase
         }
         if (descr_count){
             printf "_____\n\n"
@@ -109,12 +111,12 @@ NF == 0 {
                 if (i > 1) printf " "
                 printf "%s", descr [i]
             }
-            printf "|%%%%|%s\n", pkgpath "," pkgname
+            printf "|%%%%|%s\n", pkgpath "," pkgbase
         }
     }
     field       = ""
     pkgpath     = ""
-    pkgname     = ""
+    pkgbase     = ""
     plist_count = 0
     descr_count = 0
 }
@@ -137,7 +139,7 @@ runpipe0 \
 
 # test for dictfmt bug (max size of headword is limited in
 # dictfmt-1.10.10).  DESCRIPTION and other long fields may be broken
-# because of this
+# due to this limitation
 awk -F'\t' '
 NF != 4 && length($0) >= 1000 {
    print "dictfmt is broken, update it to the latest version" > "/dev/stderr"
