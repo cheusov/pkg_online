@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2007-2010 Aleksey Cheusov <vle@gmx.net>
+# Copyright (c) 2007-2011 Aleksey Cheusov <vle@gmx.net>
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -21,10 +21,10 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-set -e
-
 . pkg_online_client.env
 . pipestatus
+
+set -e
 
 export LC_ALL=C
 
@@ -74,10 +74,13 @@ done
 
 shift `expr $OPTIND - 1`
 
-# temp dir
-tmp_dir="/tmp/pkg_online_client.$$"
-trap "rm -rf $tmp_dir" 0 1 2 3 15
-mkdir -m 700 "$tmp_dir"
+on_exit (){
+    rm -rf $tmp_dir
+}
+
+# temp dir and files
+tmp_dir=`mktemp -d /tmp/pkg_online.XXXXXX`
+. @psu_libexecdir@/sig_handler.sh
 
 res_fn=$tmp_dir/result.txt
 log_fn=$tmp_dir/errors.log

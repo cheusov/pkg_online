@@ -1,11 +1,16 @@
-PROJECTNAME=	pkg_online_client
+PSU_LIBEXECDIR ?=	${LIBEXECDIR}/psu
 
-SCRIPTS=	pkg_online_find pkg_online_client
-FILES=		pkg_online_client.env pkg_online_client.conf
+PROJECTNAME =	pkg_online_client
 
-FILESDIR=				${EGDIR}
-FILESDIR_pkg_online_client.env=		${BINDIR}
+SCRIPTS =	pkg_online_find pkg_online_client
+FILES =		pkg_online_client.env pkg_online_client.conf
 
-INFILES=	pkg_online_client.env pkg_online_client
+FILESDIR =				${EGDIR}
+FILESDIR_pkg_online_client.env =	${BINDIR}
+
+INFILES =	pkg_online_client.env
+INSCRIPTS =	pkg_online_client
+
+INTEXTS_REPLS =	psu_libexecdir ${PSU_LIBEXECDIR}
 
 .include <mkc.files.mk>
