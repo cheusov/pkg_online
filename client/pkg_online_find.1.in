@@ -1,0 +1,38 @@
+.\"	$NetBSD$
+.\"
+.\" Copyright (c) 2011 by Aleksey Cheusov (vle@gmx.net)
+.\" Absolutely no warranty.
+.\"
+.\" ------------------------------------------------------------------
+.de VB \" Verbatim Begin
+.ft CW
+.nf
+.ne \\$1
+..
+.de VE \" Verbatim End
+.ft R
+.fi
+..
+.\" ------------------------------------------------------------------
+.TH PKG_ONLINE_FIND 1 "Jan 7, 2012" "" ""
+.SH NAME
+pkg_online_find \- searcher for packages in pkg_online database
+.SH SYNOPSIS
+.BI pkg_online_find " [options] [args]"
+.SH DESCRIPTION
+.B pkg_online_find
+is a wrapper over
+.B pkg_digger(1)
+that searches for packages in online database served by pkg_online server.
+The only difference to
+.B pkg_digger(1)
+is that
+.B
+pkg_online_client(1)
+is used as a backend searcher unless another one is specified
+in environment variable
+.I PKG_ONLINE_CLIENT.
+.SH SEE ALSO
+.BR pkg_digger(1)
+.SH AUTHOR
+Aleksey Cheusov <vle@gmx.net>
