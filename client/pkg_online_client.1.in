@@ -78,6 +78,9 @@ This option requires either
 .TP
 .B "-q"
 Quiet mode.
+.TP
+.B "-n"
+A maximum number of summaries to output.
 .SH EXAMPLES
 .VB
   pkg_online_client -h
