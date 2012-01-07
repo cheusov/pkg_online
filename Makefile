@@ -1,10 +1,10 @@
 ##################################################
 
-PROJECTNAME=	pkg_online
+PROJECTNAME =	pkg_online
 
-BIRTHDATE=	2008-02-03
+BIRTHDATE =	2008-02-03
 
-SUBPRJ=		client server doc
+SUBPRJ =	client server doc
 
 ##################################################
 

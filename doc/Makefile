@@ -1,6 +1,6 @@
-PROJECTNAME=	pkg_online_doc
+PROJECTNAME =	pkg_online_doc
 
-FILES=		README NEWS TODO 
-FILESDIR?=	${DOCDIR}
+FILES =		README NEWS TODO 
+FILESDIR ?=	${DOCDIR}
 
 .include <mkc.files.mk>
