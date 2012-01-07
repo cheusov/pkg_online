@@ -8,7 +8,7 @@ FILES =		pkg_online_client.env pkg_online_client.conf
 FILESDIR =				${EGDIR}
 FILESDIR_pkg_online_client.env =	${BINDIR}
 
-INFILES =	pkg_online_client.env
+INFILES =	pkg_online_client.env pkg_online_client.1
 INSCRIPTS =	pkg_online_client
 
 INTEXTS_REPLS =	psu_libexecdir ${PSU_LIBEXECDIR}

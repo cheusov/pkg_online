@@ -1,0 +1,98 @@
+.\"	$NetBSD$
+.\"
+.\" Copyright (c) 2011 by Aleksey Cheusov (vle@gmx.net)
+.\" Absolutely no warranty.
+.\"
+.\" ------------------------------------------------------------------
+.de VB \" Verbatim Begin
+.ft CW
+.nf
+.ne \\$1
+..
+.de VE \" Verbatim End
+.ft R
+.fi
+..
+.\" ------------------------------------------------------------------
+.TH PKG_ONLINE_CLIENT 1 "Jan 7, 2012" "" ""
+.SH NAME
+pkg_online_client \- searcher for packages in pkg_online database
+.SH SYNOPSIS
+.BI pkg_online_client " -h"
+.br
+.BI pkg_online_client " -f"
+.br
+.BI pkg_online_client " -s"
+.br
+.BI pkg_online_client " [-n] fsq1 [fsq2 ...]"
+.br
+.BI pkg_online_client " [-1|-3-9|-i] [-r] [-q] pkgpair1 [pkgpair2 ...]"
+.SH DESCRIPTION
+.B pkg_online_client
+is a backend for
+.B pkg_digger(1)
+that searches for packages in an online database served by pkg_online
+server.  As a result of the search, information about found packages
+is output either in one-line format or as a human readable or raw summary.
+.I fsq
+here is
+.IR field:strategy:query ,
+where
+.I field
+means the package field listed by 
+.BR "pkg_online_client -f"
+and
+.I strategy
+means the search strategy listed by 
+.BR "pkg_online_client -s" .
+.I pkgpair
+here is 
+.IR PKGBASE " and " PKGPATH
+of the package separated by comma.
+.SH OPTIONS
+.TP
+.B "-h"
+Display a help message.
+.TP
+.B "-s"
+Display a list of search strategies supported by pkg_online server.
+.TP
+.B "-f"
+Display a list of search fields supported by pkg_online server.
+.TP
+.B "-1"
+Only PKGPATH, PKGNAME (if needed) and COMMENT fields of the package
+are output (one-line format).
+.TP
+.B "-3"
+Only basic fields are output, that is PKGNAME, PKGPATH, COMMENT, DESCRIPTION
+and some others.
+.TP
+.B "-9"
+All available fields are output.
+.TP
+.B "-r"
+Raw summaries are output.
+This option requires either
+.IR -3 " or " -9 .
+.TP
+.B "-q"
+Quiet mode.
+.SH EXAMPLES
+.VB
+  pkg_online_client -h
+  pkg_online_client -s
+  pkg_online_client -f
+  pkg_online_client -9 lang/mawk,mawk
+  pkg_online_client MAINTAINER:prefix:joerg@
+  pkg_online_client COMMENT:word:'bulk build'
+.VE
+.SH FILES
+.TP
+.IR @sysconfdir@/pkg_online_client.conf
+configuration file
+.SH SEE ALSO
+.BR pkg_digger(1) ,
+.B pkg_summary(5)
+.SH AUTHOR
+Aleksey Cheusov <vle@gmx.net>
