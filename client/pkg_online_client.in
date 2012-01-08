@@ -73,11 +73,11 @@ ok_fn=$tmp_dir/ok
 
 #
 extract_strat (){
-    awk -F'\t' '{printf "%15s    %s\n", $3, $4}'
+    runawk -F'\t' -e '{printf "%15s    %s\n", $3, $4}'
 }
 
 extract_fields (){
-    awk -F'\t' -v type="$PKG_SUMMARY_TYPE" '
+    runawk -F'\t' -v type="$PKG_SUMMARY_TYPE" -e '
 	$3 ~ ("^pkgsrc-" type "-index") {
 	    sub(/^.*-/, "", $3)
 	    print $3
@@ -85,7 +85,7 @@ extract_fields (){
 }
 
 extract_pkgpair (){
-    awk -v limit="$limit" -F'\t' \
+    runawk -v limit="$limit" -F'\t' -e \
 	'$4 ~ /^00-?database/ {next}
 	NF == 4 {print $4; ++cnt; if (cnt == limit) exit 0}' "$@"
 }
@@ -204,7 +204,7 @@ print_pkgpair_and_onelineinfo () {
 
 # server response parser
 quick_hack_client (){
-    awk -v quiet_mode="$quiet_mode" '
+    runawk -v quiet_mode="$quiet_mode" -e '
 BEGIN {
    in_def = 0
 }
