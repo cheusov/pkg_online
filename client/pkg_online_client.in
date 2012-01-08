@@ -178,7 +178,7 @@ fi
 
 # -1
 print_pkgpair_and_onelineinfo () {
-    awk -v pkgs_fn="$pkgs_fn" -F'\t' '
+    runawk -v pkgs_fn="$pkgs_fn" -F'\t' -e '
     $0 ~ /^[0-9]/ && NF == 1 {
         skip = 0
         next
@@ -196,7 +196,6 @@ print_pkgpair_and_onelineinfo () {
         else
             printf "%-25s - %s\n", pkgpath "(" pkgbase ")", onelineinfo
         skip = 1
-        fflush()
     }
     ' "$@"
 }
@@ -265,13 +264,15 @@ $1 == 552 {
 # query generator
 generate_rfc2229_query (){
     # $1 - dbname
-    dbname=$1
-    shift
+    # $@ - queries
 
-    for db in "$@"; do
-	printf "define %s %s\r\n" "$dbname" "$db"
-    done
-    printf 'quit\r\n';
+    runawk -e '
+    BEGIN {
+       dbname = ARGV [1]
+       for (i=2; i<ARGC; ++i)
+          printf "define %s %s\r\n", dbname, ARGV [i]
+       printf "quit\r\n"
+    }' "$@"
 }
 
 # -i|-9 or -3
@@ -283,8 +284,8 @@ elif test $shortinfo; then
 fi
 
 if test $dbname; then
+    generate_rfc2229_query "$dbname" "$@" |
     runpipe_base \
-	generate_rfc2229_query "$dbname" "$@" '|' \
 	${PKG_ONLINE_NETCAT} "$PKG_ONLINE_SERVER" "$PKG_ONLINE_PORT" '|' \
 	quick_hack_client '|' \
 	decorate_info
@@ -297,7 +298,7 @@ if test $dbname; then
 #	"$@" '|' \
 #	decorate_info
 
-    exit $pipestatus_3
+    exit $pipestatus_2
 fi
 
 # -1
@@ -307,9 +308,9 @@ if test $onelineinfo; then
 	echo "$pkg" >> $pkgs_fn
     done
 
+    generate_rfc2229_query \
+	pkgsrc-"$PKG_SUMMARY_TYPE"-onelineinfo "$@" | \
     runpipe_base \
-	generate_rfc2229_query \
-	pkgsrc-"$PKG_SUMMARY_TYPE"-onelineinfo "$@" '|' \
 	${PKG_ONLINE_NETCAT} "$PKG_ONLINE_SERVER" "$PKG_ONLINE_PORT" '|' \
 	quick_hack_client '|' \
 	print_pkgpair_and_onelineinfo
@@ -322,7 +323,7 @@ if test $onelineinfo; then
 #	"$@" '|' \
 #	print_pkgpair_and_onelineinfo
 
-    exit $pipestatus_3
+    exit $pipestatus_2
 fi
 
 # search queries
