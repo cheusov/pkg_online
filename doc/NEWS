@@ -1,4 +1,15 @@
 ======================================================================
+Version 0.13.0, by Aleksey Cheusov, Sat,  7 Jan 2012 21:26:38 +0300
+
+  pkg_online_client now works dramatically faster.
+
+  Manual pages for pkg_online_client and pkg_online_find were added
+
+  Bug in signal handlers was fixed in pkg_online_client
+
+  License has changed from MIT to equivalent 2-clause BSD
+
+======================================================================
 Version 0.12.1, by Aleksey Cheusov, Sat, 19 Mar 2011 16:54:25 +0200
 
   Workaround for buggy /bin/sh on DragonFlyBSD and FreeBSD<8.N.
