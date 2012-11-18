@@ -86,9 +86,9 @@ Sample of client usage:
 
   Initialization.
 
-    export PKG_ONLINE_SERVER=your.server.org  # default - dictd.xdsl.by
+    export PKG_ONLINE_SERVER=your.server.org  # default - dict.mova.org
     export PKG_ONLINE_PORT=your.port          # default - 2628
-    # By default my server dictd.xdsl.by:26280 is used
+    # By default my server dict.mova.org:26280 is used
 
     export PKG_ONLINE_NETCAT=/usr/pkg/sbin/nc # default - nc
 
