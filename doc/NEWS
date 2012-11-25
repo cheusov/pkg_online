@@ -1,4 +1,12 @@
 ======================================================================
+Version 0.13.1, by Aleksey Cheusov, Sun, 25 Nov 2012 23:08:40 +0300
+
+  pkg_online server defaults to dict://dict.mova.org:26280
+
+  "onlineinfo" has pkg_summary(5) raw format. Appropriate changes were
+  made for pkg_online_client(1) and pkg_summary2onlineinfo(1).
+
+======================================================================
 Version 0.13.0, by Aleksey Cheusov, Sat,  7 Jan 2012 21:26:38 +0300
 
   pkg_online_client now works dramatically faster.
