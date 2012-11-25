@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2007-2011 Aleksey Cheusov <vle@gmx.net>
+# Copyright (c) 2007-2012 Aleksey Cheusov <vle@gmx.net>
 # All rights reserved.
 #
 # See LICENSE file
@@ -18,18 +18,17 @@ cat <<EOF
 usage: pkg_online_client -h
        pkg_online_client -f
        pkg_online_client -s
-       pkg_online_client [-n] fsq1 [fsq2 ...]
-       pkg_online_client -1|-3|-9|-i [-r] [-q] pkgpair1 [pkgpair2...]
-where pkgpair is <PKGPATH>,<PKGNAME>
+       pkg_online_client [-n limit] fsq1 [fsq2 ...]
+       pkg_online_client -1|-3|-9|-i [-q] pkgid1 [pkgid2...]
+where pkgid is <PKGPATH>,<PKGNAME>
 and fsq is <field>:<strategy>:<query>
 OPTIONS:
    -h         display this screen
    -s         display available search strategies
    -f         display available fields for search in
-   -1         display 1-line information about packages (by PKGPAIR)
-   -3         display short information about packages (by PKGPAIR)
-   -9|-i      display full information about packages (by PKGPAIR)
-   -r         raw output in pkg_summary(5) format
+   -1         display 1-line information about packages
+   -3         display short information about packages
+   -9|-i      display full information about packages
    -q         quiet mode, do not print "No matches found" to stderr
    -n <limit>    maximum number of results
 EOF
@@ -49,7 +48,6 @@ while getopts hsf139irqn: f; do
         9|i)  info=1;;
         3)    shortinfo=1;;
         1)    onelineinfo=1;;
-        r)    raw_format=1;;
         q)    quiet_mode=1;;
 	n)    limit=$OPTARG;;
         h)    usage; exit 0;;
@@ -148,16 +146,6 @@ dict2pkg_summary (){
     sed -n 's,^  ,,p' "$@"
 }
 
-if test -n "$raw_format"; then
-    decorate_info (){
-	dict2pkg_summary "$@"
-    }
-else
-    decorate_info (){
-	dict2pkg_summary "$@" | pkg_summary4view
-    }
-fi
-
 # -s
 if test $strats; then
     runpipe0 $PKG_ONLINE_DICT \
@@ -175,30 +163,6 @@ if test $dbs; then
 
     exit 0
 fi
-
-# -1
-print_pkgpair_and_onelineinfo () {
-    runawk -v pkgs_fn="$pkgs_fn" -F'\t' -e '
-    $0 ~ /^[0-9]/ && NF == 1 {
-        skip = 0
-        next
-    }
-
-    NF == 4 && !skip {
-        getline onelineinfo
-        getline pkgpair < pkgs_fn
-        idx = index(pkgpair, ",")
-        pkgbase = substr(pkgpair, idx + 1)
-        pkgpath = substr(pkgpair, 1, idx - 1)
-
-        if (substr(pkgpair, idx - length(pkgbase), length(pkgbase)) == pkgbase)
-            printf "%-25s - %s\n", pkgpath, onelineinfo
-        else
-            printf "%-25s - %s\n", pkgpath "(" pkgbase ")", onelineinfo
-        skip = 1
-    }
-    ' "$@"
-}
 
 # hack dict client that DEFINEs quickly multiple queries
 
@@ -275,12 +239,14 @@ generate_rfc2229_query (){
     }' "$@"
 }
 
-# -i|-9 or -3
+# -i|-9|-3|-1
 dbname=''
 if test $info; then
     dbname=pkgsrc-${PKG_SUMMARY_TYPE}-info
 elif test $shortinfo; then
     dbname=pkgsrc-${PKG_SUMMARY_TYPE}-shortinfo
+elif test $onelineinfo; then
+    dbname=pkgsrc-${PKG_SUMMARY_TYPE}-onelineinfo
 fi
 
 if test $dbname; then
@@ -288,7 +254,7 @@ if test $dbname; then
     runpipe_base \
 	${PKG_ONLINE_NETCAT} "$PKG_ONLINE_SERVER" "$PKG_ONLINE_PORT" '|' \
 	quick_hack_client '|' \
-	decorate_info
+	dict2pkg_summary
 
 #    for future versions of 'dict' client
 #
@@ -296,32 +262,7 @@ if test $dbname; then
 #	-h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" -P - \
 #	-f -d "$dbname" \
 #	"$@" '|' \
-#	decorate_info
-
-    exit $pipestatus_2
-fi
-
-# -1
-if test $onelineinfo; then
-    pkgs_fn=$tmp_dir/pkgs
-    for pkg in "$@"; do
-	echo "$pkg" >> $pkgs_fn
-    done
-
-    generate_rfc2229_query \
-	pkgsrc-"$PKG_SUMMARY_TYPE"-onelineinfo "$@" | \
-    runpipe_base \
-	${PKG_ONLINE_NETCAT} "$PKG_ONLINE_SERVER" "$PKG_ONLINE_PORT" '|' \
-	quick_hack_client '|' \
-	print_pkgpair_and_onelineinfo
-
-#    for future versions of 'dict' client
-#
-#    runpipe0 $PKG_ONLINE_DICT -F \
-#	-h "$PKG_ONLINE_SERVER" -p "$PKG_ONLINE_PORT" -P - \
-#	-f -d pkgsrc-"$PKG_SUMMARY_TYPE"-shortinfo \
-#	"$@" '|' \
-#	print_pkgpair_and_onelineinfo
+#	dict2pkg_summary
 
     exit $pipestatus_2
 fi

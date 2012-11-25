@@ -14,7 +14,7 @@
 .fi
 ..
 .\" ------------------------------------------------------------------
-.TH PKG_ONLINE_CLIENT 1 "Jan 7, 2012" "" ""
+.TH PKG_ONLINE_CLIENT 1 "Nov 25, 2012" "" ""
 .SH NAME
 pkg_online_client \- searcher for packages in pkg_online database
 .SH SYNOPSIS
@@ -24,28 +24,27 @@ pkg_online_client \- searcher for packages in pkg_online database
 .br
 .BI pkg_online_client " -s"
 .br
-.BI pkg_online_client " [-n] fsq1 [fsq2 ...]"
+.BI pkg_online_client " [-n limit] f:s:q1 [f:s:q2 ...]"
 .br
-.BI pkg_online_client " [-1|-3-9|-i] [-r] [-q] pkgpair1 [pkgpair2 ...]"
+.BI pkg_online_client " [-1|-3-9|-i] [-q] pkgid1 [pkgid2 ...]"
 .SH DESCRIPTION
 .B pkg_online_client
 is a backend for
 .B pkg_digger(1)
-that searches for packages in an online database served by pkg_online
-server.  As a result of the search, information about found packages
-is output either in one-line format or as a human readable or raw summary.
-.I fsq
+that searches for packages in pkg_online database.
+As a result of the search, found package identifiers or summaries are output.
+.I f:s:q
 here is
 .IR field:strategy:query ,
 where
 .I field
-means the package field listed by 
+means the package field output by
 .BR "pkg_online_client -f"
 and
 .I strategy
-means the search strategy listed by 
+means the search strategy output by
 .BR "pkg_online_client -s" .
-.I pkgpair
+.I pkgid
 here is 
 .IR PKGBASE " and " PKGPATH
 of the package separated by comma.
@@ -71,15 +70,10 @@ and some others.
 .B "-9"
 All available fields are output.
 .TP
-.B "-r"
-Raw summaries are output.
-This option requires either
-.IR -3 " or " -9 .
-.TP
 .B "-q"
 Quiet mode.
 .TP
-.B "-n"
+.BI "-n " limit
 A maximum number of summaries to output.
 .SH EXAMPLES
 .VB
