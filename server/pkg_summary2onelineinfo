@@ -19,7 +19,7 @@ msg=" $PKG_SUMMARY_TYPE"
 summary2dict () {
 awk '
 /^PKGNAME=/ {
-    pkgbase = substr($0, 9)
+    pkgname = pkgbase = substr($0, 9)
     sub(/-[^-]*$/, "", pkgbase)
 
     next
@@ -36,8 +36,8 @@ awk '
 }
 
 NF == 0 {
-    printf "_____\n\n%s,%s\n%s\n", pkgpath, pkgbase, comment
-    pkgbase = pkgpath = comment = ""
+    printf "_____\n\n%s,%s\nPKGNAME=%s\nPKGPATH=%s\nCOMMENT=%s\n\n", pkgpath, pkgbase, pkgname, pkgpath, comment
+    pkgname = pkgbase = pkgpath = comment = ""
 }
 ' "$@"
 }
